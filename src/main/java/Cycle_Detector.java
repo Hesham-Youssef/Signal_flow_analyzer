@@ -2,32 +2,37 @@ import org.testng.internal.collections.Pair;
 import java.util.*;
 
 public class Cycle_Detector {
+    private int startNode, endNode;
     private List<List<Pair<Integer, Integer>>> graph;
     private boolean[] stack;
     private Stack<Integer> path;
     private Set<Set<Integer>> cycles;
     private Set<Set<Integer>> forwardPaths;
 
-    public List<Set<Integer>> detectCycles(List<List<Pair<Integer, Integer>>> g){
-        graph = g;
+    public Cycle_Detector(List<List<Pair<Integer, Integer>>> graph, Integer startNode, Integer endNode) {
+        this.graph = graph;
+        this.startNode = startNode;
+        this.endNode = endNode;
+    }
+
+    public List<Set<Integer>> detectCycles(){
         stack = new boolean[graph.size()];
         path = new Stack<>();
         cycles = new HashSet<>();
 
-        dfs(0);
+        dfsCycles(0);
         return new ArrayList<>(cycles);
     }
 
-    public List<Set<Integer>> forwardPaths(List<List<Pair<Integer, Integer>>> g){
-        graph = g;
+    public List<Set<Integer>> detectForwardPaths(){
         stack = new boolean[graph.size()];
         path = new Stack<>();
-        cycles = new HashSet<>();
+        forwardPaths = new HashSet<>();
 
-        dfs(0);
-        return new ArrayList<>(cycles);
+        dfsPaths(startNode);
+        return new ArrayList<>(forwardPaths);
     }
-    private void dfs(int node) {
+    private void dfsCycles(int node) {
         stack[node] = true;
         path.add(node);
 
@@ -35,21 +40,21 @@ public class Cycle_Detector {
             if (stack[child.first()])
                 addCycle(child.first());
             else
-                dfs(child.first());
+                dfsCycles(child.first());
         }
 
         path.pop();
         stack[node] = false;
     }
-    private void fdfs(int node) {
+    private void dfsPaths(int node) {
         stack[node] = true;
         path.add(node);
 
         for (Pair<Integer, Integer> child : graph.get(node)) {
-            if (child.first() == graph.size() - 1)
+            if (child.first() == endNode)
                 addForwardPath();
-            else
-                fdfs(child.first());
+            else if (!stack[child.first()])
+                dfsPaths(child.first());
         }
 
         path.pop();
@@ -77,8 +82,8 @@ public class Cycle_Detector {
         Stack<Integer> rePath = new Stack<>();
         Set<Integer> forwardPath = new TreeSet<>();
 
-        forwardPath.add(graph.size() - 1);
-        while (!Objects.equals(path.peek(), 0)){
+        forwardPath.add(endNode);
+        while (!Objects.equals(path.peek(), startNode)){
             forwardPath.add(path.peek());
             rePath.add(path.pop());
         }
