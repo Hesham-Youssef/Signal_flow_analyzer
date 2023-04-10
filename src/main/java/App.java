@@ -3,9 +3,10 @@ import java.util.*;
 public class App {
 
     public static void main(String[] args) {
-        int n, m, x, y, c;
+        int n, m, x, y;
+        double c;
         Scanner sc = new Scanner(System.in);
-        List<Map<Integer, Integer>> graph = new ArrayList<>();
+        List<Map<Integer, Double>> graph = new ArrayList<>();
 
         System.out.println("enter number of nodes and edges:");
         n = sc.nextInt();
@@ -19,7 +20,7 @@ public class App {
         for (int i = 0; i < m; i++) {
             x = sc.nextInt();
             y = sc.nextInt();
-            c = sc.nextInt();
+            c = sc.nextDouble();
             graph.get(x).put(y, c);
         }
 

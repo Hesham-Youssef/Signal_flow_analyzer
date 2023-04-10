@@ -7,14 +7,14 @@ public class Cycle_Detector {
     private double systemGain = 0;
     private double systemDelta = 1;
     private List<Double> pathsDeltas;
-    private final List<Map<Integer, Integer>> graph;
+    private final List<Map<Integer, Double>> graph;
     private boolean[] stack;
     private Stack<Integer> path;
     private Set<Pair<Set<Integer>, Double>> cycles;
     private Set<Pair<Set<Integer>, Double>> paths;
     List<Pair<Long, Double>> loopsMask, forwardPathMask;
 
-    public Cycle_Detector(List<Map<Integer, Integer>> graph, Integer startNode, Integer endNode) {
+    public Cycle_Detector(List<Map<Integer, Double>> graph, Integer startNode, Integer endNode) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;
@@ -68,7 +68,7 @@ public class Cycle_Detector {
         stack[node] = true;
         path.add(node);
 
-        for (Map.Entry<Integer, Integer> child : graph.get(node).entrySet()) {
+        for (Map.Entry<Integer, Double> child : graph.get(node).entrySet()) {
             if (stack[child.getKey()])
                 addCycle(child.getKey());
             else
@@ -82,7 +82,7 @@ public class Cycle_Detector {
         stack[node] = true;
         path.add(node);
 
-        for (Map.Entry<Integer, Integer> child : graph.get(node).entrySet()) {
+        for (Map.Entry<Integer, Double> child : graph.get(node).entrySet()) {
             if (child.getKey() == endNode)
                 addForwardPath();
             else if (!stack[child.getKey()])
