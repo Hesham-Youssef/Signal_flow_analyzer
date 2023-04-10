@@ -1,4 +1,3 @@
-import org.testng.internal.collections.Pair;
 import java.util.*;
 
 public class App {
@@ -29,22 +28,6 @@ public class App {
         y = sc.nextInt();
 
         Cycle_Detector mm = new Cycle_Detector(graph, x, y);
-        List<Pair<Set<Integer>, Integer>> cycles = mm.detectCycles();
-        List<Pair<Set<Integer>, Integer>> forwardPaths = mm.detectForwardPaths();
-        mm.biting();
-
-        System.out.println("Loops:");
-        for (Pair<Set<Integer>, Integer> cycle : cycles) {
-            System.out.println(Arrays.toString(cycle.first().toArray()));
-        }
-
-        System.out.println();
-        System.out.println("Forward Paths:");
-        for (Pair<Set<Integer>, Integer> forwardPath : forwardPaths) {
-            System.out.println(Arrays.toString(forwardPath.first().toArray()));
-        }
-
-        System.out.println();
-        mm.systemDeltas();
+        mm.evaluateSystem();
     }
 }

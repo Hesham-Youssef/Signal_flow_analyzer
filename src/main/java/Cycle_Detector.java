@@ -4,12 +4,15 @@ import java.util.*;
 public class Cycle_Detector {
     private final int startNode;
     private final int endNode;
+    private double systemGain = 0;
+    private double systemDelta = 1;
+    private List<Double> pathsDeltas;
     private final List<Map<Integer, Integer>> graph;
     private boolean[] stack;
     private Stack<Integer> path;
-    private Set<Pair<Set<Integer>, Integer>> cycles;
-    private Set<Pair<Set<Integer>, Integer>> paths;
-    List<Pair<Long, Integer>> loopsMask, forwardPathMask;
+    private Set<Pair<Set<Integer>, Double>> cycles;
+    private Set<Pair<Set<Integer>, Double>> paths;
+    List<Pair<Long, Double>> loopsMask, forwardPathMask;
 
     public Cycle_Detector(List<Map<Integer, Integer>> graph, Integer startNode, Integer endNode) {
         this.graph = graph;
@@ -17,22 +20,49 @@ public class Cycle_Detector {
         this.endNode = endNode;
     }
 
-    public List<Pair<Set<Integer>, Integer>> detectCycles(){
+    public void evaluateSystem(){
+        detectForwardPaths();
+        detectCycles();
+        masking();
+        int count = 0;
+
+        System.out.println("Forward Paths:");
+        for (Pair<Set<Integer>, Double> forwardPath : paths) {
+            System.out.println("P" + count++ + ": " + Arrays.toString(forwardPath.first().toArray()) + ", gain: " + forwardPath.second());
+        }
+        System.out.println();
+
+        count = 0;
+        System.out.println("Loops:");
+        for (Pair<Set<Integer>, Double> cycle : cycles) {
+            System.out.println("L" + count++ + ": " + Arrays.toString(cycle.first().toArray()) + ", gain: " + cycle.second());
+        }
+        System.out.println();
+
+        systemDeltas();
+        System.out.println();
+
+        for (int i = 0; i < paths.size(); i++)
+            systemGain += forwardPathMask.get(i).second() * pathsDeltas.get(i);
+        systemGain /= systemDelta;
+
+        System.out.println("System gain: " + systemGain);
+    }
+
+    private void detectCycles(){
         stack = new boolean[graph.size()];
         path = new Stack<>();
         cycles = new HashSet<>();
 
         dfsCycles(0);
-        return new ArrayList<>(cycles);
     }
 
-    public List<Pair<Set<Integer>, Integer>> detectForwardPaths(){
+    private void detectForwardPaths(){
         stack = new boolean[graph.size()];
         path = new Stack<>();
         paths = new HashSet<>();
 
         dfsPaths(startNode);
-        return new ArrayList<>(paths);
     }
     private void dfsCycles(int node) {
         stack[node] = true;
@@ -75,7 +105,7 @@ public class Cycle_Detector {
         cycle.add(path.peek());
         rePath.add(path.pop());
 
-        int gain = 0;
+        double gain = 0;
         for (int i = 0; i < cycle.size(); i++)
             gain += graph.get(cycle.get((i+1)%cycle.size())).get(cycle.get(i));
 
@@ -97,7 +127,7 @@ public class Cycle_Detector {
         forwardPath.add(path.peek());
         rePath.add(path.pop());
 
-        int gain = 0;
+        double gain = 0;
         for (int i = 0; i < forwardPath.size()-1; i++)
             gain += graph.get(forwardPath.get(i+1)).get(forwardPath.get(i));
 
@@ -106,38 +136,44 @@ public class Cycle_Detector {
             path.add(rePath.pop());
     }
 
-    public void systemDeltas(){
-        System.out.println("System Delta: " + delta(0, 0, 1, 1, loopsMask));
-        List<Pair<Long, Integer>> freeLoopsMask = new ArrayList<>();
+    private void systemDeltas(){
+        pathsDeltas = new ArrayList<>();
+        systemDelta = delta(0, 0, 1, 1, loopsMask);
+        System.out.println("System Delta: " + systemDelta);
         int count = 0;
 
-        for (Pair<Long, Integer> integerPair : forwardPathMask) {
-            for (Pair<Long, Integer> longIntegerPair : loopsMask) {
-                if ((integerPair.first() & longIntegerPair.first()) == 0) {
-                    freeLoopsMask.add(longIntegerPair);
+        for (Pair<Long, Double> forwardPath : forwardPathMask) {
+            List<Pair<Long, Double>> freeLoopsMask = new ArrayList<>();
+            for (Pair<Long, Double> loop : loopsMask) {
+                if ((forwardPath.first() & loop.first()) == 0) {
+                    freeLoopsMask.add(loop);
                 }
             }
-            System.out.println("Delta P" + count++ + ": " + delta(0, 0, 1, 1, freeLoopsMask));
+            double pathDelta = delta(0, 0, 1, 1, freeLoopsMask);
+            pathsDeltas.add(pathDelta);
+            System.out.println("P" + count++ + " Delta: " + pathDelta);
         }
     }
 
-    public long delta(long nodes, int index, int cnt, long currentGain, List<Pair<Long, Integer>> loops){
-        long gain, totalGain = 0;
+    private double delta(long nodes, int index, int cnt, double currentGain, List<Pair<Long, Double>> loops){
+        double totalGain = 0;
+
         for (int i = index; i < loops.size(); i++){
             if ((nodes & loops.get(i).first()) == 0) {
+                double gain = loops.get(i).second() * currentGain;
                 if (cnt%2 == 1)
-                    gain = -loops.get(i).second() * currentGain;
+                    totalGain += delta(nodes | loops.get(i).first() ,index+1 ,cnt+1, gain, loops) - gain;
                 else
-                    gain = loops.get(i).second() * currentGain;
-                totalGain += delta(nodes | loops.get(i).first() ,index+1 ,cnt+1, gain, loops) + gain;
+                    totalGain += delta(nodes | loops.get(i).first() ,index+1 ,cnt+1, gain, loops) + gain;
             }
         }
+
         return totalGain + (index == 0? 1:0);
     }
 
-    public void biting() {
+    private void masking() {
         loopsMask = new ArrayList<>();
-        for (Pair<Set<Integer>, Integer> cycle : cycles) {
+        for (Pair<Set<Integer>, Double> cycle : cycles) {
             long mask = 0;
             for (int node : cycle.first())
                 mask += 1L << node;
@@ -145,7 +181,7 @@ public class Cycle_Detector {
         }
 
         forwardPathMask = new ArrayList<>();
-        for (Pair<Set<Integer>, Integer> forwardPath : paths) {
+        for (Pair<Set<Integer>, Double> forwardPath : paths) {
             long mask = 0;
             for (int node : forwardPath.first())
                 mask += 1L << node;
