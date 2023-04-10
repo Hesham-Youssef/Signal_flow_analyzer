@@ -107,7 +107,7 @@ public class Cycle_Detector {
 
         double gain = 0;
         for (int i = 0; i < cycle.size(); i++)
-            gain += graph.get(cycle.get((i+1)%cycle.size())).get(cycle.get(i));
+            gain *= graph.get(cycle.get((i+1)%cycle.size())).get(cycle.get(i));
 
         cycles.add(new Pair<>(new TreeSet<>(cycle), gain));
         while (!rePath.empty())
@@ -129,7 +129,7 @@ public class Cycle_Detector {
 
         double gain = 0;
         for (int i = 0; i < forwardPath.size()-1; i++)
-            gain += graph.get(forwardPath.get(i+1)).get(forwardPath.get(i));
+            gain *= graph.get(forwardPath.get(i+1)).get(forwardPath.get(i));
 
         paths.add(new Pair<>(new TreeSet<>(forwardPath), gain));
         while (!rePath.empty())
@@ -162,9 +162,9 @@ public class Cycle_Detector {
             if ((nodes & loops.get(i).first()) == 0) {
                 double gain = loops.get(i).second() * currentGain;
                 if (cnt%2 == 1)
-                    totalGain += delta(nodes | loops.get(i).first() ,index+1 ,cnt+1, gain, loops) - gain;
+                    totalGain += delta(nodes | loops.get(i).first(),i+1 ,cnt+1, gain, loops) - gain;
                 else
-                    totalGain += delta(nodes | loops.get(i).first() ,index+1 ,cnt+1, gain, loops) + gain;
+                    totalGain += delta(nodes | loops.get(i).first(),i+1 ,cnt+1, gain, loops) + gain;
             }
         }
 
