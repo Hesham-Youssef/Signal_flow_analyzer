@@ -1,21 +1,19 @@
 import org.testng.internal.collections.Pair;
-
 import java.util.*;
 
 public class App {
 
     public static void main(String[] args) {
         int n, m, x, y, c;
-        Pair<Integer, Integer> p;
         Scanner sc = new Scanner(System.in);
-        List<List<Pair<Integer, Integer>>> graph = new ArrayList<>();
+        List<Map<Integer, Integer>> graph = new ArrayList<>();
 
         System.out.println("enter number of nodes and edges:");
         n = sc.nextInt();
         m = sc.nextInt();
 
         for (int i = 0; i < n; i++) {
-            graph.add(new LinkedList<>());
+            graph.add(new HashMap<>());
         }
 
         System.out.println("enter edges with weight:");
@@ -23,9 +21,7 @@ public class App {
             x = sc.nextInt();
             y = sc.nextInt();
             c = sc.nextInt();
-            p = new Pair<>(y, c);
-
-            graph.get(x).add(p);
+            graph.get(x).put(y, c);
         }
 
         System.out.println("enter starting and ending node:");
@@ -33,16 +29,22 @@ public class App {
         y = sc.nextInt();
 
         Cycle_Detector mm = new Cycle_Detector(graph, x, y);
-        List<Set<Integer>> cycles = mm.detectCycles();
-        List<Set<Integer>> forwardPaths = mm.detectForwardPaths();
+        List<Pair<Set<Integer>, Integer>> cycles = mm.detectCycles();
+        List<Pair<Set<Integer>, Integer>> forwardPaths = mm.detectForwardPaths();
+        mm.biting();
 
-        for (Set<Integer> cycle : cycles) {
-            System.out.println(Arrays.toString(cycle.toArray()));
+        System.out.println("Loops:");
+        for (Pair<Set<Integer>, Integer> cycle : cycles) {
+            System.out.println(Arrays.toString(cycle.first().toArray()));
         }
 
         System.out.println();
-        for (Set<Integer> forwardPath : forwardPaths) {
-            System.out.println(Arrays.toString(forwardPath.toArray()));
+        System.out.println("Forward Paths:");
+        for (Pair<Set<Integer>, Integer> forwardPath : forwardPaths) {
+            System.out.println(Arrays.toString(forwardPath.first().toArray()));
         }
+
+        System.out.println();
+        mm.systemDeltas();
     }
 }
