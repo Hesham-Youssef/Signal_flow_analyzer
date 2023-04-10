@@ -105,7 +105,7 @@ public class Cycle_Detector {
         cycle.add(path.peek());
         rePath.add(path.pop());
 
-        double gain = 0;
+        double gain = 1;
         for (int i = 0; i < cycle.size(); i++)
             gain *= graph.get(cycle.get((i+1)%cycle.size())).get(cycle.get(i));
 
@@ -127,7 +127,7 @@ public class Cycle_Detector {
         forwardPath.add(path.peek());
         rePath.add(path.pop());
 
-        double gain = 0;
+        double gain = 1;
         for (int i = 0; i < forwardPath.size()-1; i++)
             gain *= graph.get(forwardPath.get(i+1)).get(forwardPath.get(i));
 
