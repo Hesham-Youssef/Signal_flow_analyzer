@@ -14,6 +14,10 @@ public class Cycle_Detector {
     private Set<Pair<Set<Integer>, Double>> paths;
     List<Pair<Long, Double>> loopsMask, forwardPathMask;
 
+    public double getSystemGain() {
+        return systemGain;
+    }
+
     public Cycle_Detector(List<Map<Integer, Double>> graph, Integer startNode, Integer endNode) {
         this.graph = graph;
         this.startNode = startNode;

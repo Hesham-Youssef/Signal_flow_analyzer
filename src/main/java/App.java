@@ -27,8 +27,18 @@ public class App {
         System.out.println("enter starting and ending node:");
         x = sc.nextInt();
         y = sc.nextInt();
+        if(x == 0){
+            Cycle_Detector mm = new Cycle_Detector(graph, x, y);
+            mm.evaluateSystem();
+        }else{
+            Cycle_Detector c1 = new Cycle_Detector(graph, 0, x);
+            c1.evaluateSystem();
+            System.out.println("###########################################");
 
-        Cycle_Detector mm = new Cycle_Detector(graph, x, y);
-        mm.evaluateSystem();
+            Cycle_Detector c2 = new Cycle_Detector(graph, 0, y);
+            c2.evaluateSystem();
+            System.out.println("###########################################");
+            System.out.printf("System Gain: %f",c2.getSystemGain()/c1.getSystemGain());
+        }
     }
 }
