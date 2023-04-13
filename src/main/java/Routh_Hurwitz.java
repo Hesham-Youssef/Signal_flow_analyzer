@@ -84,7 +84,7 @@ public class Routh_Hurwitz{
         }
         return zero;
     }
-    public void evaluate_system(){
+    private void evaluate_system(){
         for (int i = 0; i < rows - 2; i++) {
             double s1 = table[i][0], s2 = table[i+1][0];
 
