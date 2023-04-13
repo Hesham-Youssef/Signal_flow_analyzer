@@ -17,11 +17,9 @@ export class GraphComponent implements OnInit {
   stage!: Stage;
   layer!: Layer;
   nodes: any[] = [];
-  edges: any[][] = [];
   nodeColor: string = '#000000';
   node!: Circle;
   selectionRec!: Rect;
-  branchFlag: boolean = false;
 
 
   constructor(private graphActionsService: GraphActionsService) { }
@@ -51,6 +49,8 @@ export class GraphComponent implements OnInit {
       fill: this.nodeColor,
       draggable: true
     });
+
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec);
   }
 
   addNode(){
@@ -62,7 +62,7 @@ export class GraphComponent implements OnInit {
   }
 
   addBranch(){
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec);
+    this.graphActionsService.drawBranch();
   }
 
 }
