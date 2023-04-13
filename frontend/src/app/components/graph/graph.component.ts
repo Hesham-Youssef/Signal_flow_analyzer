@@ -2,6 +2,7 @@ import { GraphActionsService } from './../../services/graph-actions.service';
 import { Component, OnInit } from '@angular/core';
 import Konva from 'konva'
 import { Layer } from 'konva/lib/Layer';
+import { shapes } from 'konva/lib/Shape';
 import { Stage } from 'konva/lib/Stage';
 import { Circle } from 'konva/lib/shapes/Circle';
 import { Rect } from 'konva/lib/shapes/Rect';
@@ -50,7 +51,7 @@ export class GraphComponent implements OnInit {
       draggable: true
     });
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec);
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, shapes);
   }
 
   addNode(){
