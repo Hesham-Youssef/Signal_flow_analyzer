@@ -1,0 +1,9 @@
+<div>
+  <h1>Routh Stability Criterion</h1>
+  <div *ngFor="let item of coefficients; index as i;" style="display: inline-block">
+    <input type="text" placeholder="S^ {{coefficients.length - i - 1}}" [(ngModel)]="item.value">
+  </div>
+  <button (click)="addCoef()">+</button>
+  <button (click)="submitCoef()">submit</button>
+</div>
+
