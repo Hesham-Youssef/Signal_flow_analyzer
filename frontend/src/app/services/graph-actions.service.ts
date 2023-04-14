@@ -1,8 +1,13 @@
+import { Shape, shapes } from 'konva/lib/Shape';
 import { Injectable } from '@angular/core';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
+import { Arrow } from 'konva/lib/shapes/Arrow';
 import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
+import { log } from 'mathjs';
+import Konva from 'konva';
+import { Circle } from 'konva/lib/shapes/Circle';
 
 @Injectable({
   providedIn: 'root'
@@ -10,44 +15,102 @@ import { Rect } from 'konva/lib/shapes/Rect';
 export class GraphActionsService {
   branchFlag: boolean = false;
   currBranch: any[] = [];
-  edges: any[][] = [];
+  points: number[] = [];
+  edges: number[][] = [];
+  value = 0;
+  holdingNode: boolean = false;
+  currNode!: Shape;
+
   constructor() { }
 
-  mouseEventListeners(stage: Stage, layer: Layer, selectioRec: Rect, shapes: any){
+  mouseEventListeners(stage: Stage, layer: Layer, selectioRec: Rect, arrows: any[]){
+
+
+    stage.on('mousedown touchstart', (event)=>{
+      if(event.target.hasName('node')){
+        event.evt.preventDefault();
+        this.holdingNode = true;
+        this.currNode = event.target as Shape;
+      }
+      
+    })
+
+    stage.on('mouseup touchend', (event)=>{
+      event.evt.preventDefault();
+      this.holdingNode = false;
+    })
+
+
+
     stage.on('click', (event) => {
       if(!this.branchFlag){
         return;
       }
 
-      if(event.target.hasName('node') ){
-        alert("hello");
+      if(event.target.hasName('node')){
         if(this.currBranch.length == 0){
-          this.currBranch.push(event.target.id);
+          this.currBranch.push(event.target._id);
+          this.points.push(event.target.getPosition().x);
+          this.points.push(event.target.getPosition().y);
         }else{
+          let res = this.edges.filter((edge: number[]) => {
+            return (edge[0]==this.currBranch[0] && edge[1]==event.target._id)}).length;
+
+          if(res != 0){
+            alert("an edge already exists between those nodes");
+            return;
+          }
+          console.log(this.edges);
           alert("enter value");
-          let value = 0;
-          let validvalue = true; ///// change later
+          
+          let validvalue = true; ///// change later 
           if(!validvalue){
             return;
           }
-          this.currBranch.push(event.target.id);
-          this.currBranch.push(value++);
+          this.currBranch.push(event.target._id);
+          this.currBranch.push(this.value++);
           this.edges.push(this.currBranch);
-          let line = new Line({
-            
-          })
-          layer.add(new Line({
-
-          }))
+          this.points.push(event.target.getPosition().x);
+          this.points.push(event.target.getPosition().y);
+          let arrow = new Arrow({
+            points: this.points,
+            stroke: 'blue',
+            tension: 0,
+            strokeWidth: 10
+          });
+          layer.add(arrow);
+          arrows.push(arrow);
+          arrow.moveToBottom();
+          layer.draw();
+          this.currBranch = [];
+          this.points = [];
         }
       }
       
     });
+
+    stage.on('mousemove touchmove', (event)=>{ //doesn't keep following still needs to be fixed
+      event.evt.preventDefault(); 
+      console.log(this.holdingNode);
+      if(!this.holdingNode){
+        return;
+      }
+      const pos: any = this.currNode.getPosition();
+      let res = this.edges.filter((edge: number[]) => (edge[1]==this.currNode._id))
+        .map((edge)=> arrows[this.edges.indexOf(edge)])
+        .forEach((edge: Konva.Arrow) => {
+          edge.points(edge.points().slice(0, 2).concat([pos.x, pos.y]));
+        });
+      
+    });
+
   }
 
   drawBranch(){
     this.branchFlag = !this.branchFlag;
-    if(!this.branchFlag)
+    if(!this.branchFlag){
       this.currBranch = [];
+      this.points = [];
+    }
   }
 }

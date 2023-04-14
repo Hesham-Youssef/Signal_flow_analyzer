@@ -18,10 +18,10 @@ export class GraphComponent implements OnInit {
   stage!: Stage;
   layer!: Layer;
   nodes: any[] = [];
+  arrows: any[] = [];
   nodeColor: string = '#000000';
   node!: Circle;
   selectionRec!: Rect;
-
 
   constructor(private graphActionsService: GraphActionsService) { }
 
@@ -36,12 +36,6 @@ export class GraphComponent implements OnInit {
       fill: 'rgba(0, 0, 255, 0.5)',
       visible: true
     });
-
-
-    this.layer = new Layer();
-    this.stage.add(this.layer);
-    this.layer.add(this.selectionRec);
-    
     this.node = new Konva.Circle({
       x: 50,
       y: 50,
@@ -51,7 +45,13 @@ export class GraphComponent implements OnInit {
       draggable: true
     });
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, shapes);
+    this.layer = new Layer();
+    this.stage.add(this.layer);
+    this.layer.add(this.selectionRec);
+    
+    
+
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows);
   }
 
   addNode(){
