@@ -5,7 +5,7 @@ import { Stage } from 'konva/lib/Stage';
 import { Arrow } from 'konva/lib/shapes/Arrow';
 import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
-import { log } from 'mathjs';
+import { atan, cos, log, sin, sqrt } from 'mathjs';
 import Konva from 'konva';
 import { Circle } from 'konva/lib/shapes/Circle';
 
@@ -28,15 +28,15 @@ export class GraphActionsService {
 
     stage.on('mousedown touchstart', (event)=>{
       if(event.target.hasName('node')){
-        event.evt.preventDefault();
         this.holdingNode = true;
         this.currNode = event.target as Shape;
       }
+      console.log(stage.getPointerPosition);
+      
       
     })
 
     stage.on('mouseup touchend', (event)=>{
-      event.evt.preventDefault();
       this.holdingNode = false;
     })
 
@@ -70,12 +70,18 @@ export class GraphActionsService {
           this.currBranch.push(event.target._id);
           this.currBranch.push(this.value++);
           this.edges.push(this.currBranch);
-          this.points.push(event.target.getPosition().x);
-          this.points.push(event.target.getPosition().y);
+          let x = event.target.getPosition().x;
+          let y = event.target.getPosition().y;
+          let len:any = sqrt(((x-this.points[0])*(x-this.points[0])) + (y-this.points[1])*(y-this.points[1]));
+          let tanAngle = (y-this.points[1])/(x-this.points[0]);
+          let totalAngle = atan((tanAngle+1)/(1-tanAngle));
+          this.points = this.points.concat([len*sin(totalAngle), len*cos(totalAngle), x, y]);
+          console.log(this.points);
+          
           let arrow = new Arrow({
             points: this.points,
             stroke: 'blue',
-            tension: 0,
+            tension: 0.5,
             strokeWidth: 10
           });
           layer.add(arrow);
@@ -89,14 +95,21 @@ export class GraphActionsService {
       
     });
 
-    stage.on('mousemove touchmove', (event)=>{ //doesn't keep following still needs to be fixed
+    stage.on('dragmove touchmove', (event)=>{ //doesn't keep following still needs to be fixed
       event.evt.preventDefault(); 
       console.log(this.holdingNode);
       if(!this.holdingNode){
         return;
       }
+      
       const pos: any = this.currNode.getPosition();
-      let res = this.edges.filter((edge: number[]) => (edge[1]==this.currNode._id))
+      this.edges.filter((edge: number[]) => (edge[0]==this.currNode._id))
+        .map((edge)=> arrows[this.edges.indexOf(edge)])
+        .forEach((edge: Konva.Arrow) => {
+          edge.points([pos.x, pos.y].concat(edge.points().slice(2, 4)));
+        });
+
+      this.edges.filter((edge: number[]) => (edge[1]==this.currNode._id))
         .map((edge)=> arrows[this.edges.indexOf(edge)])
         .forEach((edge: Konva.Arrow) => {
           edge.points(edge.points().slice(0, 2).concat([pos.x, pos.y]));
