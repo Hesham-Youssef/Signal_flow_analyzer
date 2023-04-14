@@ -72,7 +72,8 @@ export class GraphActionsService {
           this.edges.push(this.currBranch);
           let x = event.target.getPosition().x;
           let y = event.target.getPosition().y;
-          let len:any = sqrt(((x-this.points[0])*(x-this.points[0])) + (y-this.points[1])*(y-this.points[1]));
+          let lengthBetweenTwoNodes:any = sqrt(((x-this.points[0])*(x-this.points[0])) + (y-this.points[1])*(y-this.points[1]));
+          let len = (lengthBetweenTwoNodes)/(2*0.7071)
           let tanAngle = (y-this.points[1])/(x-this.points[0]);
           let totalAngle = atan((tanAngle+1)/(1-tanAngle));
           this.points = this.points.concat([len*sin(totalAngle), len*cos(totalAngle), x, y]);
