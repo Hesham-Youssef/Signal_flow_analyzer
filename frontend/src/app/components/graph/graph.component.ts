@@ -51,7 +51,7 @@ export class GraphComponent implements OnInit {
     
     
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows);
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows, this.nodes);
   }
 
   addNode(){
@@ -64,6 +64,10 @@ export class GraphComponent implements OnInit {
 
   addBranch(){
     this.graphActionsService.drawBranch();
+  }
+
+  delete(){
+    this.graphActionsService.delete();
   }
 
 }

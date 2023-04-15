@@ -5,7 +5,7 @@ import { Stage } from 'konva/lib/Stage';
 import { Arrow } from 'konva/lib/shapes/Arrow';
 import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
-import { atan, cos, log, sin, sqrt } from 'mathjs';
+import { atan, cos, index, log, sin, sqrt } from 'mathjs';
 import Konva from 'konva';
 import { Circle } from 'konva/lib/shapes/Circle';
 
@@ -14,6 +14,7 @@ import { Circle } from 'konva/lib/shapes/Circle';
 })
 export class GraphActionsService {
   branchFlag: boolean = false;
+  deleteFlag: boolean = false;
   currBranch: any[] = [];
   points: number[] = [];
   edges: number[][] = [];
@@ -23,7 +24,7 @@ export class GraphActionsService {
 
   constructor() { }
 
-  mouseEventListeners(stage: Stage, layer: Layer, selectioRec: Rect, arrows: any[]){
+  mouseEventListeners(stage: Stage, layer: Layer, selectioRec: Rect, arrows: Konva.Arrow[], nodes: Shape[]){
 
 
     stage.on('mousedown touchstart', (event)=>{
@@ -43,9 +44,42 @@ export class GraphActionsService {
 
 
     stage.on('click', (event) => {
+      let toBeDeleted: any[] = []
+      if(this.deleteFlag){
+        if(event.target.hasName('node')){
+          this.edges.forEach((edge, i)=>{
+            if(edge[0]==event.target._id || edge[1]==event.target._id){
+              console.log(arrows, i);
+              arrows[i].remove();
+              toBeDeleted.push(i);
+            }
+          })
+          toBeDeleted.forEach((i) => {
+            arrows.splice(i,1);
+            this.edges.splice(i, 1);
+          })
+
+          toBeDeleted = [];
+          nodes.forEach((node, i)=>{
+            if(node == event.target){
+              node.remove();
+              toBeDeleted.push(i);
+            }
+          });
+          toBeDeleted.forEach((i) => {
+            nodes.splice(i, 1);
+          })
+        }
+
+        console.log(nodes, this.edges, arrows);
+        
+        return;
+      }
+
       if(!this.branchFlag){
         return;
       }
+
 
       if(event.target.hasName('node')){
         if(this.currBranch.length == 0){
@@ -78,6 +112,7 @@ export class GraphActionsService {
           
           let arrow = new Arrow({
             points: this.points,
+            name: 'branch',
             stroke: 'blue',
             tension: 0.5,
             strokeWidth: 10
@@ -89,6 +124,7 @@ export class GraphActionsService {
           this.currBranch = [];
           this.points = [];
         }
+        return;
       }
       
     });
@@ -123,9 +159,17 @@ export class GraphActionsService {
 
   drawBranch(){
     this.branchFlag = !this.branchFlag;
+    this.deleteFlag = false;
     if(!this.branchFlag){
       this.currBranch = [];
       this.points = [];
     }
+  }
+
+  delete(){
+    this.deleteFlag = !this.deleteFlag;
+    this.branchFlag = false;
+    this.currBranch = [];
+    this.points = [];
   }
 }
