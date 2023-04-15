@@ -72,11 +72,8 @@ export class GraphActionsService {
           this.edges.push(this.currBranch);
           let x = event.target.getPosition().x;
           let y = event.target.getPosition().y;
-          let lengthBetweenTwoNodes:any = sqrt(((x-this.points[0])*(x-this.points[0])) + (y-this.points[1])*(y-this.points[1]));
-          let len = (lengthBetweenTwoNodes)/(2*0.7071)
-          let tanAngle = (y-this.points[1])/(x-this.points[0]);
-          let totalAngle = atan((tanAngle+1)/(1-tanAngle));
-          this.points = this.points.concat([len*sin(totalAngle), len*cos(totalAngle), x, y]);
+          
+          this.points = this.points.concat([(this.points[0]+x+(y-this.points[1]))/2, (this.points[1]+y-x+this.points[0])/2, x, y]);
           console.log(this.points);
           
           let arrow = new Arrow({
@@ -107,13 +104,17 @@ export class GraphActionsService {
       this.edges.filter((edge: number[]) => (edge[0]==this.currNode._id))
         .map((edge)=> arrows[this.edges.indexOf(edge)])
         .forEach((edge: Konva.Arrow) => {
-          edge.points([pos.x, pos.y].concat(edge.points().slice(2, 4)));
+          let points = edge.points();
+          edge.points([pos.x, pos.y, (points[4]+pos.x-(pos.y-points[5]))/2, (points[5]+pos.y+pos.x-points[4])/2].concat(edge.points().slice(4, 6)));
+          console.log(edge.points());
+          
         });
 
       this.edges.filter((edge: number[]) => (edge[1]==this.currNode._id))
         .map((edge)=> arrows[this.edges.indexOf(edge)])
         .forEach((edge: Konva.Arrow) => {
-          edge.points(edge.points().slice(0, 2).concat([pos.x, pos.y]));
+          let points = edge.points();
+          edge.points(edge.points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y]));          
         });
       
     });
