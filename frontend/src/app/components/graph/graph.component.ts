@@ -28,6 +28,7 @@ export class GraphComponent implements OnInit {
   ngOnInit(): void {
     this.stage = new Stage({
       container: 'container',
+      name: 'stage',
       width: window.innerWidth,
       height: window.innerHeight
     });

@@ -44,8 +44,10 @@ export class GraphActionsService {
 
 
     stage.on('click', (event) => {
-      let toBeDeleted: any[] = []
+      console.log(event.target.name());
+
       if(this.deleteFlag){
+        let toBeDeleted: any[] = []
         if(event.target.hasName('node')){
           this.edges.forEach((edge, i)=>{
             if(edge[0]==event.target._id || edge[1]==event.target._id){
@@ -71,6 +73,13 @@ export class GraphActionsService {
           })
         }
 
+        if(event.target.hasName('branch')){
+          let index = arrows.indexOf(event.target as Konva.Arrow);
+          arrows[index].remove();
+          arrows.splice(index,1);
+          this.edges.splice(index, 1);
+        }
+
         console.log(nodes, this.edges, arrows);
         
         return;
@@ -80,6 +89,12 @@ export class GraphActionsService {
         return;
       }
 
+      if(event.target.hasName('stage')){
+        console.log('deselected');
+        this.currBranch = [];
+        this.points = [];
+      }
+      
 
       if(event.target.hasName('node')){
         if(this.currBranch.length == 0){
@@ -92,6 +107,8 @@ export class GraphActionsService {
 
           if(res != 0){
             alert("an edge already exists between those nodes");
+            this.currBranch = [];
+            this.points = [];
             return;
           }
           console.log(this.edges);
@@ -107,7 +124,11 @@ export class GraphActionsService {
           let x = event.target.getPosition().x;
           let y = event.target.getPosition().y;
           
-          this.points = this.points.concat([(this.points[0]+x+(y-this.points[1]))/2, (this.points[1]+y-x+this.points[0])/2, x, y]);
+          if(this.currBranch[0] == this.currBranch[1]){
+            this.points = this.points.concat([x-20, y-50, x+20, y-50, x, y]);
+          }else{
+            this.points = this.points.concat([(this.points[0]+x+(y-this.points[1]))/2, (this.points[1]+y-x+this.points[0])/2, x, y]);
+          }
           console.log(this.points);
           
           let arrow = new Arrow({
@@ -150,7 +171,11 @@ export class GraphActionsService {
         .map((edge)=> arrows[this.edges.indexOf(edge)])
         .forEach((edge: Konva.Arrow) => {
           let points = edge.points();
-          edge.points(edge.points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y]));          
+          if(this.currBranch[0] == this.currBranch[1]){
+            edge.points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
+          }else{
+            edge.points(edge.points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y])); 
+          }  
         });
       
     });
