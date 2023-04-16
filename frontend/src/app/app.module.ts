@@ -9,6 +9,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 
 import { GraphComponent } from './components/graph/graph.component';
+import { MainComponent } from './components/main/main.component';
 
 
 
@@ -16,7 +17,8 @@ import { GraphComponent } from './components/graph/graph.component';
   declarations: [
     AppComponent,
     RouthComponent,
-    GraphComponent
+    GraphComponent,
+    MainComponent
   ],
 
   imports: [

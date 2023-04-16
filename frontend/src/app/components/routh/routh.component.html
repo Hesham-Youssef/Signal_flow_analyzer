@@ -1,6 +1,9 @@
 <div class="container">
   <div class="card">
-    <h1>Routh Stability Criterion</h1>
+    <div style="width: 100%">
+      <button [routerLink]="''" style="display: flex; justify-content: flex-start; align-items: center;"><img src="assets\back-svgrepo-com.svg" height="18" width="18"></button>
+      <h1 style="display:flex; justify-content: center; align-items: center">Routh Stability Criterion</h1>
+    </div>
     <form (ngSubmit)="submitCoef()" class="form">
       <div *ngFor="let item of coefficients; index as i;" class="input-container">
         <input type="text" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}" (keydown)="validateNo($event)" class="input" required>

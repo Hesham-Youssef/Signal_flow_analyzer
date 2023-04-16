@@ -33,6 +33,6 @@ export class RouthComponent implements OnInit {
   }
 
   validateNo(e: KeyboardEvent) {
-    return (!isNaN(Number(e.key)) || e.key == "Backspace");
+    return (!isNaN(Number(e.key)) || e.key == "Backspace" || e.key == "-");
   }
 }

@@ -1,3 +1,18 @@
-<button (click)="addNode()">add node</button>
-<button (click)="addBranch()">add branch</button>
-<div id="container"></div>
+<div class="body">
+  <div class="modal-content">
+    <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18"></button>
+    <button (click)="addNode()">add node</button>
+    <button (click)="addBranch($event)">add branch</button>
+  </div>
+  <div id="container"></div>
+
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" (click)="closeModal()">&times;</span>
+      <h2>Branch Gain</h2>
+      <input class="input" type="text" placeholder="Gain" (keydown)="validateNo($event)" [(ngModel)]="gain" id="gain">
+      <button (click)="submitGain()">Enter</button>
+    </div>
+  </div>
+</div>

@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
     "konva": "^8.4.3",
+    "mathjs": "^11.8.0",
     "ng2-konva": "^6.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
