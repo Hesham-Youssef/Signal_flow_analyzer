@@ -44,27 +44,27 @@ export class GraphActionsService {
 
 
 
-    stage.on('click', (event) => {
+    stage.on('click', async (event) => {
       console.log(event.target.name());
 
-      if(this.deleteFlag){
+      if (this.deleteFlag) {
         let toBeDeleted: any[] = []
-        if(event.target.hasName('node')){
-          this.edges.forEach((edge, i)=>{
-            if(edge[0]==event.target._id || edge[1]==event.target._id){
+        if (event.target.hasName('node')) {
+          this.edges.forEach((edge, i) => {
+            if (edge[0] == event.target._id || edge[1] == event.target._id) {
               console.log(arrows, i);
               arrows[i].remove();
               toBeDeleted.push(i);
             }
           })
           toBeDeleted.forEach((i) => {
-            arrows.splice(i,1);
+            arrows.splice(i, 1);
             this.edges.splice(i, 1);
           })
 
           toBeDeleted = [];
-          nodes.forEach((node, i)=>{
-            if(node == event.target){
+          nodes.forEach((node, i) => {
+            if (node == event.target) {
               node.remove();
               toBeDeleted.push(i);
             }
@@ -74,31 +74,31 @@ export class GraphActionsService {
           })
         }
 
-        if(event.target.hasName('branch')){
+        if (event.target.hasName('branch')) {
           let index = arrows.indexOf(event.target as Konva.Arrow);
           arrows[index].remove();
-          arrows.splice(index,1);
+          arrows.splice(index, 1);
           this.edges.splice(index, 1);
         }
 
         console.log(nodes, this.edges, arrows);
-        
+
         return;
       }
 
-      if(!this.branchFlag){
+      if (!this.branchFlag) {
         return;
       }
 
-      if(event.target.hasName('stage')){
+      if (event.target.hasName('stage')) {
         console.log('deselected');
         this.currBranch = [];
         this.points = [];
       }
-      
 
-      if(event.target.hasName('node')){
-        if(this.currBranch.length == 0){
+
+      if (event.target.hasName('node')) {
+        if (this.currBranch.length == 0) {
           this.currBranch.push(event.target._id);
           this.points.push(event.target.getPosition().x);
           this.points.push(event.target.getPosition().y);
@@ -123,11 +123,11 @@ export class GraphActionsService {
           this.edges.push(this.currBranch);
           let x = event.target.getPosition().x;
           let y = event.target.getPosition().y;
-          
-          if(this.currBranch[0] == this.currBranch[1]){
-            this.points = this.points.concat([x-20, y-50, x+20, y-50, x, y]);
-          }else{
-            this.points = this.points.concat([(this.points[0]+x+(y-this.points[1]))/2, (this.points[1]+y-x+this.points[0])/2, x, y]);
+
+          if (this.currBranch[0] == this.currBranch[1]) {
+            this.points = this.points.concat([x - 20, y - 50, x + 20, y - 50, x, y]);
+          } else {
+            this.points = this.points.concat([(this.points[0] + x + (y - this.points[1])) / 2, (this.points[1] + y - x + this.points[0]) / 2, x, y]);
           }
           console.log(this.points);
 
@@ -138,7 +138,7 @@ export class GraphActionsService {
             tension: 0.5,
             strokeWidth: 5
           });
-          let text = new Konva.Text( {
+          let text = new Konva.Text({
             x: (this.points[0] + x + y - this.points[1]) / 2 - 10,
             y: (this.points[1] + y - x + this.points[0]) / 2 - 25,
             text: this.value.toString(),
@@ -184,8 +184,8 @@ export class GraphActionsService {
           if(this.currBranch[0] == this.currBranch[1]){
             edge.points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
           }else{
-            edge.points(edge.points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y])); 
-          }  
+            edge.points(edge.points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y]));
+          }
         });
 
     });
