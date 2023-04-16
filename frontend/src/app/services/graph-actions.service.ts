@@ -5,7 +5,6 @@ import { Stage } from 'konva/lib/Stage';
 import { Arrow } from 'konva/lib/shapes/Arrow';
 import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
-import { atan, cos, index, log, sin, sqrt } from 'mathjs';
 import Konva from 'konva';
 import { Circle } from 'konva/lib/shapes/Circle';
 
@@ -46,6 +45,23 @@ export class GraphActionsService {
 
     stage.on('click', async (event) => {
       console.log(event.target.name());
+
+
+      if(!this.deleteFlag && (event.target.hasName('branch') || event.target.hasName('text'))){
+        console.log(this.edges);
+        
+        document.getElementById('modal')!.style.display = 'block';
+        await this.waitUntil(() => this.isSubmitted);
+        this.isSubmitted = false;
+        let index = -1
+        if(event.target.hasName('branch')){
+          index = arrows.indexOf(event.target as Arrow);
+        }else if(event.target.hasName('text')){
+          index = gains.indexOf(event.target as Konva.Text)
+        }
+        this.edges[index][2] = this.value;
+        gains[index].setText(this.value.toString());
+      }
 
       if (this.deleteFlag) {
         let toBeDeleted: any[] = []
@@ -94,6 +110,7 @@ export class GraphActionsService {
         console.log('deselected');
         this.currBranch = [];
         this.points = [];
+        return;
       }
 
 
@@ -144,7 +161,8 @@ export class GraphActionsService {
             text: this.value.toString(),
             fontSize: 20,
             fontFamily: 'Calibri',
-            fill: 'green'
+            fill: 'green',
+            name: 'text'
           });
           layer.add(arrow);
           layer.add(text);
