@@ -168,24 +168,31 @@ export class GraphActionsService {
 
       const pos: any = this.currNode.getPosition();
       this.edges.filter((edge: number[]) => (edge[0] == this.currNode._id))
-        .map((edge) => arrows[this.edges.indexOf(edge)])
-        .forEach((edge: Konva.Arrow) => {
-          let points = edge.points();
-          let gain : Konva.Text = gains[arrows.indexOf(edge)];
-          edge.points([pos.x, pos.y, (points[4] + pos.x - (pos.y - points[5])) / 2, (points[5] + pos.y + pos.x - points[4]) / 2].concat(edge.points().slice(4, 6)));
+        .map((edge) => this.edges.indexOf(edge))
+        .forEach((index: number) => {
+          let points = arrows[index].points();
+          let gain : Konva.Text = gains[index];
+          if(this.edges[index][1] == this.edges[index][0]){
+            arrows[index].points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
+          }else{
+            arrows[index].points([pos.x, pos.y, (points[4] + pos.x - (pos.y - points[5])) / 2, (points[5] + pos.y + pos.x - points[4]) / 2].concat(arrows[index].points().slice(4, 6)));
+          }
           gain.setAttr('x', (points[0] + points[4] + points[5] - points[1]) / 2 - 10);
           gain.setAttr('y', (points[1] + points[5] - points[4] + points[0]) / 2 - 25);
         });
 
       this.edges.filter((edge: number[]) => (edge[1] == this.currNode._id))
-        .map((edge) => arrows[this.edges.indexOf(edge)])
-        .forEach((edge: Konva.Arrow) => {
-          let points = edge.points();
-          if(this.currBranch[0] == this.currBranch[1]){
-            edge.points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
+        .map((edge) => this.edges.indexOf(edge))
+        .forEach((index: number) => {
+          let points = arrows[index].points();
+          let gain : Konva.Text = gains[index];
+          if(this.edges[index][1] == this.edges[index][0]){
+            arrows[index].points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
           }else{
-            edge.points(edge.points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y]));
+            arrows[index].points(arrows[index].points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y]));
           }
+          gain.setAttr('x', (points[0] + points[4] + points[5] - points[1]) / 2 - 10);
+          gain.setAttr('y', (points[1] + points[5] - points[4] + points[0]) / 2 - 25);
         });
 
     });
