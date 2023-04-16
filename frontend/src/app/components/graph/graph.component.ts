@@ -35,6 +35,7 @@ export class GraphComponent implements OnInit {
     }
     this.stage = new Stage({
       container: 'container',
+      name: 'stage',
       width: window.innerWidth,
       height: window.innerHeight - 140
     });
@@ -56,7 +57,7 @@ export class GraphComponent implements OnInit {
     this.stage.add(this.layer);
     this.layer.add(this.selectionRec);
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows, this.gains);
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows, this.gains, this.nodes);
   }
 
   addNode(){
@@ -91,5 +92,8 @@ export class GraphComponent implements OnInit {
   submitGain() {
     this.graphActionsService.submitGain(this.gain);
     this.gain = 0;
+  }
+  delete(){
+    this.graphActionsService.delete();
   }
 }
