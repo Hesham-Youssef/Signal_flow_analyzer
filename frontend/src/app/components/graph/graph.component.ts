@@ -100,7 +100,9 @@ export class GraphComponent implements OnInit {
   }
 
   solveSystem() {
-    console.log(this.nodes.length)
-    this.httpService.getSystemSol(this.graphActionsService.edges, this.nodes.length);
+    this.httpService.getSystemSol(this.graphActionsService.edges, this.nodes.length).subscribe(data => {
+      console.log(data);
+    })
   }
+
 }
