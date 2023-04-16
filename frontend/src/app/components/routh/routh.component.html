@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="card">
+    <div style="width: 100%">
+      <button [routerLink]="''" style="display: flex; justify-content: flex-start; align-items: center;"><img src="assets\back-svgrepo-com.svg" height="18" width="18"></button>
+      <h1 style="display:flex; justify-content: center; align-items: center">Routh Stability Criterion</h1>
+    </div>
+    <form (ngSubmit)="submitCoef()" class="form">
+      <div *ngFor="let item of coefficients; index as i;" class="input-container">
+        <input type="text" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}" (keydown)="validateNo($event)" class="input" required>
+        <label>S^{{coefficients.length - i - 1}} <span *ngIf="i != coefficients.length-1">+</span> </label>
+      </div>
+      <div class="size-btn-container">
+        <button class="size-btn" type="button" (click)="addCoef()">+</button>
+        <button class="size-btn" type="button" (click)="removeCoef()">-</button>
+      </div>
+      <button class="submit-btn" type="submit" [disabled]="">submit</button>
+    </form>
+  </div>
+
+  <br>
+
+  <div class="card" id="ans">
+    <h1>Stability analysis</h1>
+    <div>
+      <div *ngFor="let rows of ansTable; index as i;">
+        S^{{coefficients.length - 1 - i}}
+        <div *ngFor="let element of rows; index as j;" style="display: inline-block">
+          <input type="text"  class="input" readonly value="{{element}}">
+        </div>
+      </div>
+      <br>
+      <div> Number of roots in the Right Hand Side of Imaginary Axis =
+        <input type="text"  class="output" readonly value="{{rootsInRHS}}">
+      </div>
+      <br>
+      <div>The system is <input type="text"  class="output" readonly value="{{stabilityStatus}}"></div>
+    </div>
+  </div>
+</div>
+
