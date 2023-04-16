@@ -7,6 +7,8 @@ import { Stage } from 'konva/lib/Stage';
 import { Circle } from 'konva/lib/shapes/Circle';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { clone } from 'mathjs';
+import {HttpService} from "../../services/http.service";
+import * as http from "http";
 
 
 @Component({
@@ -25,7 +27,7 @@ export class GraphComponent implements OnInit {
   selectionRec!: Rect;
   gain: number = 0;
 
-  constructor(private graphActionsService: GraphActionsService) { }
+  constructor(private graphActionsService: GraphActionsService, private httpService: HttpService) { }
 
   ngOnInit(): void {
     window.onclick = function(event: any) {
@@ -35,6 +37,7 @@ export class GraphComponent implements OnInit {
     }
     this.stage = new Stage({
       container: 'container',
+      name: 'stage',
       width: window.innerWidth,
       height: window.innerHeight - 140
     });
@@ -56,12 +59,11 @@ export class GraphComponent implements OnInit {
     this.stage.add(this.layer);
     this.layer.add(this.selectionRec);
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows, this.gains);
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows, this.gains, this.nodes);
   }
 
   addNode(){
     let node = clone(this.node);
-
     this.nodes.push(node);
     this.layer.add(node);
     this.layer.draw();
@@ -91,5 +93,14 @@ export class GraphComponent implements OnInit {
   submitGain() {
     this.graphActionsService.submitGain(this.gain);
     this.gain = 0;
+  }
+
+  delete(){
+    this.graphActionsService.delete();
+  }
+
+  solveSystem() {
+    console.log(this.nodes.length)
+    this.httpService.getSystemSol(this.graphActionsService.edges, this.nodes.length);
   }
 }

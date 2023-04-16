@@ -3,6 +3,7 @@
     <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18"></button>
     <button (click)="addNode()">add node</button>
     <button (click)="addBranch($event)">add branch</button>
+    <button (click)="delete()">delete branch</button>
   </div>
   <div id="container"></div>
 
@@ -15,4 +16,8 @@
       <button (click)="submitGain()">Enter</button>
     </div>
   </div>
+</div>
+
+<div class="modal-content">
+  <button (click)="solveSystem()">Click me!</button>
 </div>
