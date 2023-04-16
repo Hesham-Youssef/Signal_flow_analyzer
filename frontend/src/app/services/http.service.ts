@@ -7,7 +7,7 @@ import { catchError, retry } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HttpService {
-  apiURL = "localhost:8080/solver";
+  apiURL = "http://localhost:8080/solver";
 
   constructor(private http: HttpClient) { }
 
