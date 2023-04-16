@@ -7,6 +7,8 @@ import { Stage } from 'konva/lib/Stage';
 import { Circle } from 'konva/lib/shapes/Circle';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { clone } from 'mathjs';
+import {HttpService} from "../../services/http.service";
+import * as http from "http";
 
 
 @Component({
@@ -25,7 +27,7 @@ export class GraphComponent implements OnInit {
   selectionRec!: Rect;
   gain: number = 0;
 
-  constructor(private graphActionsService: GraphActionsService) { }
+  constructor(private graphActionsService: GraphActionsService, private httpService: HttpService) { }
 
   ngOnInit(): void {
     window.onclick = function(event: any) {
@@ -62,7 +64,6 @@ export class GraphComponent implements OnInit {
 
   addNode(){
     let node = clone(this.node);
-
     this.nodes.push(node);
     this.layer.add(node);
     this.layer.draw();
@@ -93,7 +94,13 @@ export class GraphComponent implements OnInit {
     this.graphActionsService.submitGain(this.gain);
     this.gain = 0;
   }
+
   delete(){
     this.graphActionsService.delete();
+  }
+
+  solveSystem() {
+    console.log(this.nodes.length)
+    this.httpService.getSystemSol(this.graphActionsService.edges, this.nodes.length);
   }
 }
