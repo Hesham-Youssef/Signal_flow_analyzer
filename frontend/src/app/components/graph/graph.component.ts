@@ -57,7 +57,7 @@ export class GraphComponent implements OnInit {
     this.node = new Konva.Circle({
       x: 50,
       y: 50,
-      radius: 10,
+      radius: 20,
       name: 'node',
       fill: this.nodeColor,
       draggable: true

@@ -1,4 +1,4 @@
-import { Shape, shapes } from 'konva/lib/Shape';
+import { Shape, ShapeConfig, shapes } from 'konva/lib/Shape';
 import { Injectable } from '@angular/core';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
@@ -7,6 +7,7 @@ import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
 import Konva from 'konva';
 import { Circle } from 'konva/lib/shapes/Circle';
+import { cot } from 'mathjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +22,9 @@ export class GraphActionsService {
   value = 0;
   holdingNode: boolean = false;
   currNode!: Shape;
-
-  constructor() { }
+  selected!: Circle | null;
+  constructor() {
+  }
 
   mouseEventListeners(stage: Stage, layer: Layer, selectioRec: Rect, arrows: Konva.Arrow[], gains: Konva.Text[], nodes: Shape[]) {
 
@@ -107,12 +109,16 @@ export class GraphActionsService {
         console.log('deselected');
         this.currBranch = [];
         this.points = [];
+        this.selected!.fill('rgba(0, 0, 0, 1)')
+        this.selected = null;
         return;
       }
 
 
       if (event.target.hasName('node')) {
         if (this.currBranch.length == 0) {
+          this.selected = event.target as Circle;
+          (event.target as Circle).fill('rgba(100, 100, 255, 1)');
           this.currBranch.push(event.target._id);
           this.points.push(event.target.getPosition().x);
           this.points.push(event.target.getPosition().y);
@@ -125,6 +131,8 @@ export class GraphActionsService {
             alert("an edge already exists between those nodes");
             this.currBranch = [];
             this.points = [];
+            this.selected!.fill('rgba(0, 0, 0, 1)');
+            this.selected = null;
             return;
           }
           console.log(this.edges);
@@ -137,11 +145,10 @@ export class GraphActionsService {
           this.edges.push(this.currBranch);
           let x = event.target.getPosition().x;
           let y = event.target.getPosition().y;
-
           if (this.currBranch[0] == this.currBranch[1]) {
             this.points = this.points.concat([x - 20, y - 50, x + 20, y - 50, x, y]);
           } else {
-            this.points = this.points.concat([(this.points[0] + x + (y - this.points[1])) / 2, (this.points[1] + y - x + this.points[0]) / 2, x, y]);
+            this.points = this.getConnectorPoints({x:this.points[0], y:this.points[1]}, event.target.position(), (event.target as Circle).radius());
           }
           console.log(this.points);
 
@@ -150,11 +157,11 @@ export class GraphActionsService {
             name: 'branch',
             stroke: 'blue',
             tension: 0.5,
-            strokeWidth: 5
+            strokeWidth: 5,
           });
           let text = new Konva.Text({
-            x: (this.points[0] + x + y - this.points[1]) / 2 - 10,
-            y: (this.points[1] + y - x + this.points[0]) / 2 - 25,
+            x: this.points[2] - 10,
+            y: this.points[3] - 25,
             text: this.value.toString(),
             fontSize: 20,
             fontFamily: 'Calibri',
@@ -166,52 +173,66 @@ export class GraphActionsService {
           arrows.push(arrow);
           gains.push(text);
           arrow.moveToBottom();
+          text.moveToTop();
           layer.draw();
           this.currBranch = [];
           this.points = [];
+          this.selected!.fill('rgba(0, 0, 0, 1)')
+          this.selected = null;
         }
         return;
       }
 
     });
 
-    stage.on('dragmove touchmove', (event) => { //doesn't keep following still needs to be fixed
+    stage.on('dragmove touchmove', (event) => {
       event.evt.preventDefault();
       if (!this.holdingNode) {
         return;
       }
 
-      const pos: any = this.currNode.getPosition();
+      const pos: any = event.target.position();
       this.edges.filter((edge: number[]) => (edge[0] == this.currNode._id))
-        .map((edge) => this.edges.indexOf(edge))
-        .forEach((index: number) => {
-          let points = arrows[index].points();
-          let gain : Konva.Text = gains[index];
-          if(this.edges[index][1] == this.edges[index][0]){
-            arrows[index].points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
-          }else{
-            arrows[index].points([pos.x, pos.y, (points[4] + pos.x - (pos.y - points[5])) / 2, (points[5] + pos.y + pos.x - points[4]) / 2].concat(arrows[index].points().slice(4, 6)));
-          }
-          gain.setAttr('x', (points[0] + points[4] + points[5] - points[1]) / 2 - 10);
-          gain.setAttr('y', (points[1] + points[5] - points[4] + points[0]) / 2 - 25);
+        .forEach((edge: number[]) => {
+          this.updateArrows(arrows, edge, pos, gains, nodes.filter((node:Shape) => node._id == edge[1])[0].position(), (event.target as Circle).radius())
         });
 
-      this.edges.filter((edge: number[]) => (edge[1] == this.currNode._id))
-        .map((edge) => this.edges.indexOf(edge))
-        .forEach((index: number) => {
-          let points = arrows[index].points();
-          let gain : Konva.Text = gains[index];
-          if(this.edges[index][1] == this.edges[index][0]){
-            arrows[index].points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
-          }else{
-            arrows[index].points(arrows[index].points().slice(0, 2).concat([(points[0]+pos.x+(pos.y-points[1]))/2, (points[1]+pos.y-pos.x+points[0])/2, pos.x, pos.y]));
-          }
-          gain.setAttr('x', (points[0] + points[4] + points[5] - points[1]) / 2 - 10);
-          gain.setAttr('y', (points[1] + points[5] - points[4] + points[0]) / 2 - 25);
+        this.edges.filter((edge: number[]) => (edge[1] == this.currNode._id))
+        .forEach((edge: number[]) => {
+          this.updateArrows(arrows, edge, nodes.filter((node:Shape) => node._id == edge[0])[0].position(), gains, pos, (event.target as Circle).radius())
         });
 
     });
 
+  }
+
+
+  updateArrows(arrows: Arrow[], edge: number[], fromPos: {x:number, y:number}, gains: Konva.Text[], pos:{x:number, y:number}, radius: number){
+    let index = this.edges.indexOf(edge);
+    let gain : Konva.Text = gains[index];
+    if(this.edges[index][1] == this.edges[index][0]){
+      arrows[index].points(this.points.concat([pos.x, pos.y, pos.x-20, pos.y-50, pos.x+20, pos.y-50, pos.x, pos.y]));
+    }else{
+      arrows[index].points(this.getConnectorPoints(fromPos, pos, radius));
+    }
+    gain.setAttr('x', arrows[index].points()[2] - 10);
+    gain.setAttr('y', arrows[index].points()[3] - 25);
+  }
+
+
+  getConnectorPoints(from: {x:number, y:number}, to: {x:number, y:number}, radius: number) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    let angle = Math.atan2(-dy, dx);
+
+    return [
+      from.x + -radius * Math.cos(angle + Math.PI),
+      from.y + radius * Math.sin(angle + Math.PI),
+      (to.x-from.x+cot(((90)/2))* (to.y-from.y))/2 + from.x, 
+      (to.y-from.y+cot(((90)/2))* (from.x-to.x))/2 + from.y,
+      to.x + -radius * Math.cos(angle),
+      to.y + radius * Math.sin(angle),
+    ];
   }
 
   drawBranch() {
