@@ -102,7 +102,15 @@ export class GraphComponent implements OnInit {
     this.gain = 0;
   }
 
-  delete(){
+  delete($event : any){
+    if ($event.target.style.color == 'white') {
+      $event.target.style.background = '#262628';
+      $event.target.style.color = '#eee';
+    }
+    else {
+      $event.target.style.background = '#ff2800';
+      $event.target.style.color = 'white';
+    }
     this.graphActionsService.delete();
   }
 
