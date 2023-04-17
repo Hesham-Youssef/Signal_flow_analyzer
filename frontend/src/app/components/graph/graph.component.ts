@@ -120,4 +120,7 @@ export class GraphComponent implements OnInit {
 
   }
 
+  closeSystemSol() {
+    document.getElementById("ans-card")!.style.display = "none";
+  }
 }
