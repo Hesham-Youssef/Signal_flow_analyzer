@@ -45,7 +45,7 @@ export class GraphActionsService {
 
       if(!this.deleteFlag && (event.target.hasName('branch') || event.target.hasName('text'))){
         console.log(this.edges);
-        
+
         document.getElementById('modal')!.style.display = 'block';
         await this.waitUntil(() => this.isSubmitted);
         this.isSubmitted = false;
@@ -63,7 +63,7 @@ export class GraphActionsService {
         let toBeDeleted: any[] = []
         if (event.target.hasName('node')) {
           this.edges.forEach((edge, i) => {
-            if (edge[0] == event.target._id - 5 || edge[1] == event.target._id - 5) {
+            if (edge[0] == event.target._id || edge[1] == event.target._id) {
               console.log(arrows, i);
               gains[i].remove();
               arrows[i].remove();
@@ -113,12 +113,12 @@ export class GraphActionsService {
 
       if (event.target.hasName('node')) {
         if (this.currBranch.length == 0) {
-          this.currBranch.push(event.target._id - 5);
+          this.currBranch.push(event.target._id);
           this.points.push(event.target.getPosition().x);
           this.points.push(event.target.getPosition().y);
         } else {
           let res = this.edges.filter((edge: number[]) => {
-            return (edge[0] == this.currBranch[0] && edge[1] == event.target._id - 5)
+            return (edge[0] == this.currBranch[0] && edge[1] == event.target._id)
           }).length;
 
           if (res != 0) {
@@ -131,7 +131,7 @@ export class GraphActionsService {
           document.getElementById('modal')!.style.display = 'block';
           await this.waitUntil(() => this.isSubmitted);
           this.isSubmitted = false;
-          this.currBranch.push(event.target._id - 5);
+          this.currBranch.push(event.target._id);
           this.currBranch.push(Number(this.value));
           console.log(this.value);
           this.edges.push(this.currBranch);
@@ -245,6 +245,18 @@ export class GraphActionsService {
     this.currBranch = [];
     this.points = [];
   }
+
+  geteEgeList() {
+    let edgeList : number[][] = [];
+    for(let i = 0; i < this.edges.length; i++) {
+      edgeList.push([]);
+      edgeList[i].push(this.edges[i][0] - 5);
+      edgeList[i].push(this.edges[i][1] - 5);
+      edgeList[i].push(this.edges[i][2]);
+    }
+    return edgeList;
+  }
+
 }
 
 

@@ -20,4 +20,10 @@ export class HttpService {
     return this.http.get(this.apiURL + "/flowGraph", {params: params});
   }
 
+  getRouth(coefficients: number[]) {
+    let params = new HttpParams();
+    params = params.append('edges', coefficients.toString());
+    return this.http.get(this.apiURL + "/routhHurwitz" , {params: params});
+  }
+
 }

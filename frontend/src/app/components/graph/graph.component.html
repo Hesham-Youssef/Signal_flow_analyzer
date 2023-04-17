@@ -1,9 +1,10 @@
 <div class="body">
-  <div class="modal-content">
-    <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18"></button>
+  <div class="card">
+    <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18" style="filter: invert(100%) sepia(0%) saturate(3123%) hue-rotate(122deg) brightness(119%) contrast(87%);"></button>
     <button (click)="addNode()">add node</button>
     <button (click)="addBranch($event)">add branch</button>
-    <button (click)="delete()">delete branch</button>
+    <button (click)="delete()" class="delete-btn">delete branch</button>
+    <button (click)="solveSystem()" class="solve-btn">Solve System</button>
   </div>
   <div id="container"></div>
 
@@ -12,12 +13,49 @@
     <div class="modal-content">
       <span class="close" (click)="closeModal()">&times;</span>
       <h2>Branch Gain</h2>
+      <hr>
       <input class="input" type="text" placeholder="Gain" (keydown)="validateNo($event)" [(ngModel)]="gain" id="gain">
       <button (click)="submitGain()">Enter</button>
     </div>
   </div>
+
+  <div class="ans-card" id="ans-card">
+    <h2>System Solution</h2>
+    <br>
+    <div class="card2">
+      <span style="font-weight: 700">Forward Paths</span>
+      <br>
+      <div *ngFor="let path of forwardPaths; index as i" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+        Path= <input class="output" value="{{path}}" readonly>
+        Gain= <input class="output" value="{{pathGains[i]}}" readonly>
+      </div>
+    </div>
+    <br>
+    <div class="card2">
+      <span style="font-weight: 700">Loops</span>
+      <br>
+      <div *ngFor="let path of loops; index as i" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+        Loop= <input class="output" value="{{path}}" readonly>
+        Gain= <input class="output" value="{{loopGains[i]}}" readonly>
+      </div>
+    </div>
+    <br>
+    <div class="card2">
+      <span style="font-weight: 700">Δs</span>
+      <br>
+      <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+        System Δ= <input class="output" value="{{systemDelta}}" readonly>
+      </div>
+      <div *ngFor="let path of deltas; index as i" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+        Δ{{i}}= <input class="output" value="{{path}}" readonly>
+      </div>
+    </div>
+    <br>
+    <div class="card2">
+      <span style="font-weight: 700">System Gain</span>
+      <br>
+      <input class="output" value="{{systemGain}}" readonly>
+    </div>
+  </div>
 </div>
 
-<div class="modal-content">
-  <button (click)="solveSystem()">Click me!</button>
-</div>
