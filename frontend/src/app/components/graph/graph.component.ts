@@ -67,7 +67,7 @@ export class GraphComponent implements OnInit {
     this.stage.add(this.layer);
     this.layer.add(this.selectionRec);
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.selectionRec, this.arrows, this.gains, this.nodes);
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.arrows, this.gains, this.nodes);
   }
 
   addNode(){
