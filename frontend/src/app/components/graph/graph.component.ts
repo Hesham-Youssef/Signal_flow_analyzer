@@ -7,6 +7,8 @@ import { Stage } from 'konva/lib/Stage';
 import { Circle } from 'konva/lib/shapes/Circle';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { clone } from 'mathjs';
+import {HttpService} from "../../services/http.service";
+import * as http from "http";
 
 
 @Component({
@@ -24,10 +26,18 @@ export class GraphComponent implements OnInit {
   node!: Circle;
   selectionRec!: Rect;
   gain: number = 0;
+  forwardPaths: number[][] = [[1,2], [2,3], [3,4], [1,2], [2,3], [3,4]];
+  loops: number[][] = [[1,2], [2,3], [3,4]];
+  loopGains: number[] = [1, 2, 3];
+  pathGains: number[] = [3, 4, 5];
+  deltas: number[] = [];
+  systemDelta: number = 0;
+  systemGain: number = 0;
 
-  constructor(private graphActionsService: GraphActionsService) { }
+  constructor(private graphActionsService: GraphActionsService, private httpService: HttpService) { }
 
   ngOnInit(): void {
+    document.body.style.background = '#161618';
     window.onclick = function(event: any) {
       if (event.target == document.getElementById('modal')) {
         event.target.style.display = "none";
@@ -36,8 +46,8 @@ export class GraphComponent implements OnInit {
     this.stage = new Stage({
       container: 'container',
       name: 'stage',
-      width: window.innerWidth,
-      height: window.innerHeight - 140
+      width: window.innerWidth * 0.96,
+      height: window.innerHeight * 0.8
     });
 
     this.selectionRec = new Konva.Rect({
@@ -62,21 +72,19 @@ export class GraphComponent implements OnInit {
 
   addNode(){
     let node = clone(this.node);
-
     this.nodes.push(node);
     this.layer.add(node);
     this.layer.draw();
   }
 
   addBranch($event : any){
-    if ($event.target.style.color == 'white') {
-      $event.target.style.background = 'white';
-      $event.target.style.color = 'black';
-
+    if ($event.target.style.color == 'lightgreen') {
+      $event.target.style.background = '#262628';
+      $event.target.style.color = '#eee';
     }
     else {
       $event.target.style.background = 'black';
-      $event.target.style.color = 'white';
+      $event.target.style.color = 'lightgreen';
     }
     this.graphActionsService.drawBranch();
   }
@@ -93,7 +101,23 @@ export class GraphComponent implements OnInit {
     this.graphActionsService.submitGain(this.gain);
     this.gain = 0;
   }
+
   delete(){
     this.graphActionsService.delete();
   }
+
+  solveSystem() {
+    this.httpService.getSystemSol(this.graphActionsService.geteEgeList(), this.nodes.length).subscribe((data: any) => {
+      this.forwardPaths = data.Paths;
+      this.pathGains = data.pathsGain;
+      this.loops = data.Loops;
+      this.loopGains = data.loopsGain;
+      this.deltas = data.Deltas;
+      this.systemDelta = data.SystemDelta;
+      this.systemGain = data.SystemGain;
+    });
+    document.getElementById("ans-card")!.style.display = "flex";
+
+  }
+
 }

@@ -35,14 +35,11 @@ export class GraphActionsService {
       }
       console.log(stage.getPointerPosition);
 
-
     })
 
     stage.on('mouseup touchend', (event) => {
       this.holdingNode = false;
     })
-
-
 
     stage.on('click', async (event) => {
       console.log(event.target.name());
@@ -50,7 +47,7 @@ export class GraphActionsService {
 
       if(!this.deleteFlag && (event.target.hasName('branch') || event.target.hasName('text'))){
         console.log(this.edges);
-        
+
         document.getElementById('modal')!.style.display = 'block';
         await this.waitUntil(() => this.isSubmitted);
         this.isSubmitted = false;
@@ -70,6 +67,7 @@ export class GraphActionsService {
           this.edges.forEach((edge, i) => {
             if (edge[0] == event.target._id || edge[1] == event.target._id) {
               console.log(arrows, i);
+              gains[i].remove();
               arrows[i].remove();
               toBeDeleted.push(i);
             }
@@ -142,7 +140,7 @@ export class GraphActionsService {
           await this.waitUntil(() => this.isSubmitted);
           this.isSubmitted = false;
           this.currBranch.push(event.target._id);
-          this.currBranch.push(this.value);
+          this.currBranch.push(Number(this.value));
           console.log(this.value);
           this.edges.push(this.currBranch);
           let x = event.target.getPosition().x;
@@ -268,6 +266,18 @@ export class GraphActionsService {
     this.currBranch = [];
     this.points = [];
   }
+
+  geteEgeList() {
+    let edgeList : number[][] = [];
+    for(let i = 0; i < this.edges.length; i++) {
+      edgeList.push([]);
+      edgeList[i].push(this.edges[i][0] - 5);
+      edgeList[i].push(this.edges[i][1] - 5);
+      edgeList[i].push(this.edges[i][2]);
+    }
+    return edgeList;
+  }
+
 }
 
 
