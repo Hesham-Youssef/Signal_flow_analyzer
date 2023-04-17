@@ -20,4 +20,8 @@ export class HttpService {
     return this.http.get(this.apiURL + "/flowGraph", {params: params});
   }
 
+  getRouth(coefficients: number[]) {
+    return this.http.get(this.apiURL + "/routh" + coefficients.toString());
+  }
+
 }

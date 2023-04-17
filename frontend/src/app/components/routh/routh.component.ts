@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {HttpService} from "../../services/http.service";
 
 @Component({
   selector: 'app-routh',
@@ -12,9 +13,11 @@ export class RouthComponent implements OnInit {
   rootsInRHS: number = 0;
   stabilityStatus: string = "Critically Stable";
 
-  constructor() { }
+  constructor(private httpService: HttpService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    document.body.style.background = '#161618';
+  }
 
   addCoef() {
     this.coefficients.push({});
@@ -26,10 +29,10 @@ export class RouthComponent implements OnInit {
 
   submitCoef() {
     this.coefList = this.coefficients.map(d => {return Number(d.value)});
-    console.log(this.coefList);
-    //here goes the http request to get the calculations from the back
-    //once we put the values into their respective variables, it will change on the UI
-    document.getElementById('ans')!.style.opacity = '1';
+    this.httpService.getRouth(this.coefList).subscribe(data => {
+      console.log(data);
+    });
+    document.getElementById('ans')!.style.display = 'flex';
   }
 
   validateNo(e: KeyboardEvent) {
