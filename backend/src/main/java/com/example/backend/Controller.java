@@ -10,22 +10,21 @@ import java.util.*;
 @RequestMapping("/solver")
 public class Controller {
     @GetMapping("/flowGraph")
-    public String flowGraphSolver(@RequestParam("edges") List<List<Double>> list, @RequestParam("nodes") int num) {
+    public JSONObject handleExampleRequest(@RequestParam("edges") List<List<Double>> list, @RequestParam("nodes") int num) {
         List<Map<Integer, Double>> graph = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             graph.add(new HashMap<>());
         }
-        System.out.println(list);
 
         for (int i = 0; i < list.size(); i++) {
-            graph.get(list.get(i).get(0).intValue()).put(list.get(i).get(1).intValue(), list.get(i).get(2));
+            graph.get(list.get(i).get(0).intValue()).put(list.get(i).get(1).intValue(), Double.valueOf(list.get(i).get(2)));
         }
 
         Cycle_Detector detector = new Cycle_Detector(graph, 0, num-1);
         JSONObject ans = detector.evaluateSystem();
 
         System.out.println(ans);
-        return ans.toString();
+        return ans;
     }
 
     @GetMapping("/routhHurwitz")
