@@ -3,10 +3,7 @@ package com.example.backend;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = {}, allowedHeaders = "*")
 @RestController
@@ -18,6 +15,7 @@ public class Controller {
         for (int i = 0; i < num; i++) {
             graph.add(new HashMap<>());
         }
+        System.out.println(list);
 
         for (int i = 0; i < list.size(); i++) {
             graph.get(list.get(i).get(0).intValue()).put(list.get(i).get(1).intValue(), list.get(i).get(2));
@@ -31,7 +29,7 @@ public class Controller {
     }
 
     @GetMapping("/routhHurwitz")
-    public String routhHurwitzSolver(@RequestParam("edges") List<Double> list) {
+    public String routhHurwitzSolver(@RequestParam("coefficient") List<Double> list) {
 
         Routh_Hurwitz routh = new Routh_Hurwitz(list);
         JSONObject ans = routh.check_stability();

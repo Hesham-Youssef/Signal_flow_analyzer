@@ -17,7 +17,6 @@ public class Routh_Hurwitz{
     }
     private List<List<Double>> creatTable(){
         List<List<Double>> Table = new ArrayList<>();
-        System.out.println(rows+"  " +cols);
         for(int i = 0 ; i < rows ; i++){
             List<Double> row = new ArrayList<>();
             for(int j = 0 ; j < cols ; j++){
