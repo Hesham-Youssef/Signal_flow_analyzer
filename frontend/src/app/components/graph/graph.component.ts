@@ -1,5 +1,5 @@
 import { GraphActionsService } from './../../services/graph-actions.service';
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import Konva from 'konva'
 import { Layer } from 'konva/lib/Layer';
 import { shapes } from 'konva/lib/Shape';
@@ -7,8 +7,7 @@ import { Stage } from 'konva/lib/Stage';
 import { Circle } from 'konva/lib/shapes/Circle';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { clone } from 'mathjs';
-import {HttpService} from "../../services/http.service";
-import * as http from "http";
+import {HttpService} from "../../services/http.service";4
 
 
 @Component({
@@ -23,6 +22,8 @@ export class GraphComponent implements OnInit {
   arrows: any[] = [];
   gains: any[] = [];
   nodeColor: string = '#000000';
+  addBtn: boolean = false;
+  deleteBtn: boolean = false;
   node!: Circle;
   selectionRec!: Rect;
   gain: number = 0;
@@ -77,15 +78,10 @@ export class GraphComponent implements OnInit {
     this.layer.draw();
   }
 
-  addBranch($event : any){
-    if ($event.target.style.color == 'lightgreen') {
-      $event.target.style.background = '#262628';
-      $event.target.style.color = '#eee';
-    }
-    else {
-      $event.target.style.background = 'black';
-      $event.target.style.color = 'lightgreen';
-    }
+  addBranch(){
+    this.addBtn = !this.addBtn;
+    this.deleteBtn = false;
+    this.updateBtns();
     this.graphActionsService.drawBranch();
   }
 
@@ -102,15 +98,10 @@ export class GraphComponent implements OnInit {
     this.gain = 0;
   }
 
-  delete($event : any){
-    if ($event.target.style.color == 'white') {
-      $event.target.style.background = '#262628';
-      $event.target.style.color = '#eee';
-    }
-    else {
-      $event.target.style.background = '#ff2800';
-      $event.target.style.color = 'white';
-    }
+  delete(){
+    this.deleteBtn = !this.deleteBtn;
+    this.addBtn = false;
+    this.updateBtns();
     this.graphActionsService.delete();
   }
 
@@ -130,5 +121,25 @@ export class GraphComponent implements OnInit {
 
   closeSystemSol() {
     document.getElementById("ans-card")!.style.display = "none";
+  }
+
+  private updateBtns() {
+    if (!this.addBtn) {
+      document.getElementById('add-btn')!.style.background = '#262628';
+      document.getElementById('add-btn')!.style.color = '#eee';
+    }
+    else {
+      document.getElementById('add-btn')!.style.background = 'black';
+      document.getElementById('add-btn')!.style.color = 'lightgreen';
+    }
+
+    if (!this.deleteBtn) {
+      document.getElementById('delete-btn')!.style.background = '#262628';
+      document.getElementById('delete-btn')!.style.color = '#eee';
+    }
+    else {
+      document.getElementById('delete-btn')!.style.background = '#ff2800';
+      document.getElementById('delete-btn')!.style.color = 'white';
+    }
   }
 }

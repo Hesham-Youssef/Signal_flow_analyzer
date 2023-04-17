@@ -2,8 +2,8 @@
   <div class="card">
     <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18" style="filter: invert(100%) sepia(0%) saturate(3123%) hue-rotate(122deg) brightness(119%) contrast(87%);"></button>
     <button (click)="addNode()">Add node</button>
-    <button (click)="addBranch($event)">Add branch</button>
-    <button (click)="delete($event)" class="delete-btn">Delete</button>
+    <button (click)="addBranch()" id="add-btn">Add branch</button>
+    <button (click)="delete()" id="delete-btn" class="delete-btn">Delete</button>
     <button (click)="solveSystem()" class="solve-btn">Solve System</button>
   </div>
   <div id="container"></div>
