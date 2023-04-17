@@ -1,5 +1,8 @@
 package com.example.backend;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Routh_Hurwitz{
@@ -12,14 +15,17 @@ public class Routh_Hurwitz{
     public Routh_Hurwitz (List<Double> coefficients){
         this.coefficients = coefficients;
     }
-    private void print_table(){
+    private List<List<Double>> creatTable(){
+        List<List<Double>> Table = new ArrayList<>();
         System.out.println(rows+"  " +cols);
         for(int i = 0 ; i < rows ; i++){
+            List<Double> row = new ArrayList<>();
             for(int j = 0 ; j < cols ; j++){
-                System.out.print(table[i][j]+ " ");
+                row.add(table[i][j]);
             }
-            System.out.println();
+            Table.add(row);
         }
+        return Table;
     }
     private void initialize(){
         array_length = coefficients.toArray().length;   // array_length == system_order + 1
@@ -101,20 +107,22 @@ public class Routh_Hurwitz{
         }
     }
 
-    public void check_stability(){
+    public JSONObject check_stability(){
+        JSONObject jsonAns = new JSONObject();
         initialize();
         evaluate_system();
+
         if(num_roots_in_the_RHS() > 0){
-            System.out.println("UnStable");
+            jsonAns.put("State","UnStable");
         }else if(first_col_contain_zero()){
-            System.out.println("Critically Stable");
+            jsonAns.put("State","Critically Stable");
         }else{
-            System.out.println("Stable");
+            jsonAns.put("State","Stable");
         }
-        System.out.println();
-        print_table();
-        System.out.println();
-        System.out.println(num_roots_in_the_RHS());
+        jsonAns.put("Table",creatTable());
+        jsonAns.put("NumberOfRoots",num_roots_in_the_RHS());
+
+        return jsonAns;
     }
 
 }

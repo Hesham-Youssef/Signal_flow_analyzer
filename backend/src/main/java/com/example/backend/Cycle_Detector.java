@@ -169,7 +169,6 @@ public class Cycle_Detector {
 
     private double delta(long nodes, int index, int cnt, double currentGain, List<Pair<Long, Double>> loops) {
         double totalGain = 0;
-
         for (int i = index; i < loops.size(); i++) {
             if ((nodes & loops.get(i).first()) == 0) {
                 double gain = loops.get(i).second() * currentGain;
