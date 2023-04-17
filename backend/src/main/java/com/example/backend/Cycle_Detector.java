@@ -58,7 +58,7 @@ public class Cycle_Detector {
             systemGain += forwardPathMask.get(i).second() * pathsDeltas.get(i);
         systemGain /= systemDelta;
 
-        jsonAns.put("System gain" ,systemGain);
+        jsonAns.put("SystemGain" ,systemGain);
         return jsonAns;
     }
 

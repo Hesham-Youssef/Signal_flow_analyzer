@@ -26,10 +26,10 @@ export class GraphComponent implements OnInit {
   node!: Circle;
   selectionRec!: Rect;
   gain: number = 0;
-  forwardPaths: number[][] = [[1,2], [2,3], [3,4], [1,2], [2,3], [3,4]];
-  loops: number[][] = [[1,2], [2,3], [3,4]];
-  loopGains: number[] = [1, 2, 3];
-  pathGains: number[] = [3, 4, 5];
+  forwardPaths: number[][] = [];
+  loops: number[][] = [];
+  loopGains: number[] = [];
+  pathGains: number[] = [];
   deltas: number[] = [];
   systemDelta: number = 0;
   systemGain: number = 0;

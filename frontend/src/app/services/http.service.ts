@@ -22,7 +22,7 @@ export class HttpService {
 
   getRouth(coefficients: number[]) {
     let params = new HttpParams();
-    params = params.append('edges', coefficients.toString());
+    params = params.append('coefficient', coefficients.toString());
     return this.http.get(this.apiURL + "/routhHurwitz" , {params: params});
   }
 

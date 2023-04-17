@@ -10,7 +10,7 @@ import java.util.*;
 @RequestMapping("/solver")
 public class Controller {
     @GetMapping("/flowGraph")
-    public JSONObject handleExampleRequest(@RequestParam("edges") List<List<Double>> list, @RequestParam("nodes") int num) {
+    public String handleExampleRequest(@RequestParam("edges") List<List<Double>> list, @RequestParam("nodes") int num) {
         List<Map<Integer, Double>> graph = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             graph.add(new HashMap<>());
@@ -24,7 +24,7 @@ public class Controller {
         JSONObject ans = detector.evaluateSystem();
 
         System.out.println(ans);
-        return ans;
+        return ans.toString();
     }
 
     @GetMapping("/routhHurwitz")
