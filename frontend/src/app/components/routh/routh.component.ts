@@ -9,9 +9,9 @@ import {HttpService} from "../../services/http.service";
 export class RouthComponent implements OnInit {
   coefficients : any[] = [{}, {}, {}];
   coefList : number[] = [0, 0, 0];
-  ansTable: number[][] = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+  ansTable: number[][] = [];
   rootsInRHS: number = 0;
-  stabilityStatus: string = "Critically Stable";
+  stabilityStatus: string = "";
 
   constructor(private httpService: HttpService) { }
 
@@ -29,8 +29,10 @@ export class RouthComponent implements OnInit {
 
   submitCoef() {
     this.coefList = this.coefficients.map(d => {return Number(d.value)});
-    this.httpService.getRouth(this.coefList).subscribe(data => {
-      console.log(data);
+    this.httpService.getRouth(this.coefList).subscribe((data : any) => {
+      this.ansTable = data.AnsTable;
+      this.rootsInRHS = data.NumberOfRoots;
+      this.stabilityStatus = data.State;
     });
     document.getElementById('ans')!.style.display = 'flex';
   }

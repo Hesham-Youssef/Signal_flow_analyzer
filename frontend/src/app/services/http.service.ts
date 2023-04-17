@@ -21,7 +21,9 @@ export class HttpService {
   }
 
   getRouth(coefficients: number[]) {
-    return this.http.get(this.apiURL + "/routh" + coefficients.toString());
+    let params = new HttpParams();
+    params = params.append('edges', coefficients.toString());
+    return this.http.get(this.apiURL + "/routhHurwitz" , {params: params});
   }
 
 }

@@ -119,7 +119,7 @@ public class Routh_Hurwitz{
         }else{
             jsonAns.put("State","Stable");
         }
-        jsonAns.put("Table",creatTable());
+        jsonAns.put("AnsTable",creatTable());
         jsonAns.put("NumberOfRoots",num_roots_in_the_RHS());
 
         return jsonAns;
