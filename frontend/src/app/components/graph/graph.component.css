@@ -67,6 +67,15 @@ button:active {
   background-color: #404042;
 }
 
+.add-btn:hover {
+  box-shadow: #3038d1 0 0 0 3px, transparent 0 0 0 0;
+  background-color: #303064;
+}
+
+.add-btn:active {
+  background-color: #404078;
+}
+
 .delete-btn:hover {
   box-shadow: #ff2800 0 0 0 3px, transparent 0 0 0 0;
   background-color: #644042;

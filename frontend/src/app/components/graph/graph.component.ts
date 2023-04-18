@@ -21,7 +21,7 @@ export class GraphComponent implements OnInit {
   nodes: any[] = [];
   arrows: any[] = [];
   gains: any[] = [];
-  nodeColor: string = '#000000';
+  nodeColor: string = '#324b77';
   addBtn: boolean = false;
   deleteBtn: boolean = false;
   node!: Circle;
@@ -126,20 +126,16 @@ export class GraphComponent implements OnInit {
   private updateBtns() {
     if (!this.addBtn) {
       document.getElementById('add-btn')!.style.background = '#262628';
-      document.getElementById('add-btn')!.style.color = '#eee';
     }
     else {
-      document.getElementById('add-btn')!.style.background = 'black';
-      document.getElementById('add-btn')!.style.color = 'lightgreen';
+      document.getElementById('add-btn')!.style.background = '#3038d1';
     }
 
     if (!this.deleteBtn) {
       document.getElementById('delete-btn')!.style.background = '#262628';
-      document.getElementById('delete-btn')!.style.color = '#eee';
     }
     else {
       document.getElementById('delete-btn')!.style.background = '#ff2800';
-      document.getElementById('delete-btn')!.style.color = 'white';
     }
   }
 }

@@ -25,7 +25,7 @@ export class GraphActionsService {
   holdingNode: boolean = false;
   currNode!: Shape;
   selected!: Circle | null;
-  
+
 
   constructor() {
   }
@@ -45,7 +45,7 @@ export class GraphActionsService {
     gain.setAttr('x', pos.x - 10);
     gain.setAttr('y', pos.y - 10);
   }
-  
+
 
   buildAnchor(layer: Layer, startNode: Shape, endNode: Shape, positions: number[], gain: Konva.Text) {
     let anchor = new Konva.Circle({
@@ -53,7 +53,7 @@ export class GraphActionsService {
       y: positions[3],
       radius: 20,
       stroke: '#666',
-      fill: '#ddd',
+      fill: 'transparent',
       id:'a' + startNode._id+endNode._id,
       strokeWidth: 2,
       draggable: true,
@@ -88,7 +88,7 @@ export class GraphActionsService {
     this.updateDottedLines(layer, startNode, endNode, anchor, gain);
     return anchor;
   }
-  
+
 
   mouseEventListeners(stage: Stage, layer: Layer, arrows: Shape[], gains: Konva.Text[], nodes: Shape[]) {
 
@@ -170,7 +170,7 @@ export class GraphActionsService {
       if (event.target.hasName('stage')) {
         this.currBranch = [];
         this.points = [];
-        this.selected!.fill('rgba(0, 0, 0, 1)')
+        this.selected!.fill('#324b77')
         this.selected = null;
         return;
       }
@@ -179,7 +179,7 @@ export class GraphActionsService {
       if (event.target.hasName('node')) {
         if (this.currBranch.length == 0) {
           this.selected = event.target as Circle;
-          (event.target as Circle).fill('rgba(0, 0, 0, 0.5)');
+          (event.target as Circle).fill('rgba(50,75,119,0.75)');
           this.currBranch.push(event.target._id);
           this.points.push(event.target.getPosition().x);
           this.points.push(event.target.getPosition().y);
@@ -192,7 +192,7 @@ export class GraphActionsService {
             alert("an edge already exists between those nodes");
             this.currBranch = [];
             this.points = [];
-            this.selected!.fill('rgba(0, 0, 0, 1)');
+            this.selected!.fill('#324b77');
             this.selected = null;
             return;
           }
@@ -210,7 +210,7 @@ export class GraphActionsService {
             text: this.value.toString(),
             fontSize: 20,
             fontFamily: 'Calibri',
-            fill: 'green',
+            fill: '#324b77',
             name: 'text'
           });
           this.points = this.getConnectorPoints({x:this.points[0], y:this.points[1]}, event.target.position(), (event.target as Circle).radius());
@@ -230,7 +230,7 @@ export class GraphActionsService {
               let anchor = this.buildAnchor(layer, startNode, event.target as Shape, this.points, text);
               this.anchors.push(anchor);
               arrow = new Konva.Shape({
-                stroke: 'red',
+                stroke: '#5077be',
                 strokeWidth: 4,
                 sceneFunc: (ctx, shape) => {
                   ctx.beginPath();
@@ -245,7 +245,7 @@ export class GraphActionsService {
                 },
             });
           }
-          
+
           layer.add(arrow);
           layer.add(text);
           arrows.push(arrow as Arrow);
@@ -255,7 +255,7 @@ export class GraphActionsService {
           layer.draw();
           this.currBranch = [];
           this.points = [];
-          this.selected!.fill('rgba(0, 0, 0, 1)')
+          this.selected!.fill('#324b77')
           this.selected = null;
         }
         return;
@@ -300,7 +300,7 @@ export class GraphActionsService {
       this.updateDottedLines(layer, from, end, anchor, gain)
       points = this.getConnectorPoints(from.position(), end.position(), (from as Circle).radius());
     }
-    
+
   }
 
 
@@ -312,7 +312,7 @@ export class GraphActionsService {
     return [
       from.x + -radius * Math.cos(angle + Math.PI),
       from.y + radius * Math.sin(angle + Math.PI),
-      (to.x-from.x-cot(((10)/2))* (to.y-from.y))/2 + from.x, 
+      (to.x-from.x-cot(((10)/2))* (to.y-from.y))/2 + from.x,
       (to.y-from.y-cot(((10)/2))* (from.x-to.x))/2 + from.y,
       to.x + -radius * Math.cos(angle),
       to.y + radius * Math.sin(angle),
