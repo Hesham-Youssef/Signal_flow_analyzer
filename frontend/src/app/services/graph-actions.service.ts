@@ -19,7 +19,7 @@ export class GraphActionsService {
   currBranch: any[] = [];
   points: number[] = [];
   edges: number[][] = [];
-  anchors: Circle[] = [];
+  
   isSubmitted: boolean = false;
   value = 0;
   holdingNode: boolean = false;
@@ -127,16 +127,25 @@ export class GraphActionsService {
         if (event.target.hasName('node')) {
           this.edges.forEach((edge, i) => {
             if (edge[0] == event.target._id || edge[1] == event.target._id) {
-              gains[i].remove();
+              gains[i].remove();  
               arrows[i].remove();
               toBeDeleted.push(i);
+
+              if(edge[0] != edge[1]){
+                let anchor = layer.findOne('#a' + edge[0]+edge[1]);
+                layer.findOne('#p' + anchor._id)!.remove();
+                anchor!.remove();
+              }
+              
             }
           })
-          toBeDeleted.forEach((i) => {
-            arrows.splice(i, 1);
-            this.edges.splice(i, 1);
-            gains.splice(i, 1);
-          })
+          console.log(toBeDeleted);
+          
+          for (let index = toBeDeleted.length-1; index > -1; index--) {
+            arrows.splice(toBeDeleted[index], 1);
+            this.edges.splice(toBeDeleted[index], 1);
+            gains.splice(toBeDeleted[index], 1);
+          }
 
           toBeDeleted = [];
           nodes.forEach((node, i) => {
@@ -154,12 +163,18 @@ export class GraphActionsService {
           let index = arrows.indexOf(event.target as Konva.Arrow);
           arrows[index].remove();
           gains[index].remove();
+          if(this.edges[index][0] != this.edges[index][1]){
+            let anchor = layer.findOne('#a' + this.edges[index][0]+this.edges[index][1]);
+            layer.findOne('#p' + anchor._id)!.remove();
+            anchor!.remove();
+          }
           arrows.splice(index, 1);
           this.edges.splice(index, 1);
           gains.splice(index, 1);
         }
 
-
+        console.log(this.edges, arrows);
+        
         return;
       }
 
@@ -228,9 +243,9 @@ export class GraphActionsService {
           } else {
               let startNode = nodes.filter((node) => node._id == this.currBranch[0])[0];
               let anchor = this.buildAnchor(layer, startNode, event.target as Shape, this.points, text);
-              this.anchors.push(anchor);
               arrow = new Konva.Shape({
                 stroke: 'red',
+                name: 'branch',
                 strokeWidth: 4,
                 sceneFunc: (ctx, shape) => {
                   ctx.beginPath();
