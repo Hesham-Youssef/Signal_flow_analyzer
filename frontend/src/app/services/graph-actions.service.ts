@@ -257,6 +257,23 @@ export class GraphActionsService {
                     event.target.y()
                   );
                   ctx.fillStrokeShape(shape);
+                  let PI2 = Math.PI * 2;
+                  let dx = event.target.x() - anchor.x();
+                  let dy = event.target.y() - anchor.y();
+                  let radians = (Math.atan2(dy, dx) + PI2) % PI2;;
+                  let length = 40;
+                  let width = 20;
+
+                  ctx.save();
+                  ctx.beginPath();
+                  ctx.translate(event.target.x(), event.target.y());
+                  ctx.rotate(radians);
+                  ctx.moveTo(0, 0);
+                  ctx.lineTo(-length, width / 2);
+                  ctx.moveTo(0, 0);
+                  ctx.lineTo(-length, -width / 2);
+                  ctx.restore();
+                  ctx.fillStrokeShape(shape);
                 },
             });
           }
