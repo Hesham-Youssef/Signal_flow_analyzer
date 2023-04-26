@@ -10,6 +10,7 @@ export class MainComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    document.body.style.background = '#161618';
   }
 
 }

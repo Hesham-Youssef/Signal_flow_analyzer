@@ -4,7 +4,9 @@
   align-items: center;
   justify-content: center;
   font-family: sans-serif;
-  box-shadow: 0 0 10px 0 gray;
+  background-color: #202022;
+  color: #eee;
+  box-shadow: 0 0 10px 0 black;
   border-radius: 10px;
   margin: 2%;
   padding: 2%;
@@ -15,6 +17,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  color: #eee;
   margin: 2%;
   padding: 2%;
 }
@@ -26,7 +29,8 @@
   justify-content: center;
   margin: 2%;
   padding: 2%;
-  box-shadow: 0 0 10px 0 gray;
+  background-color: #262628;
+  box-shadow: 0 0 10px 0 black;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
@@ -35,6 +39,7 @@
 .btn {
   align-items: center;
   background-color: transparent;
+  color: #eee;
   box-sizing: border-box;
   display: inline-flex;
   flex: 1 1 auto;
@@ -53,10 +58,10 @@
 }
 
 .box:hover {
-  background-color: #eee;
+  background-color: #303032;
   box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
 }
 
 .box:active {
-  background-color: #ccc;
+  background-color: #404042;
 }

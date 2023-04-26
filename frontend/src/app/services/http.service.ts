@@ -7,7 +7,7 @@ import { catchError, retry } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HttpService {
-  apiURL = "localhost:8080";
+  apiURL = "http://localhost:8080/solver";
 
   constructor(private http: HttpClient) { }
 
@@ -17,8 +17,13 @@ export class HttpService {
       params = params.append('edges', edgeList[i].join(','));
     }
     params = params.append('nodes', nodes);
-    console.log(params);
-    return this.http.get(this.apiURL, {params: params});
+    return this.http.get(this.apiURL + "/flowGraph", {params: params});
+  }
+
+  getRouth(coefficients: number[]) {
+    let params = new HttpParams();
+    params = params.append('edges', coefficients.toString());
+    return this.http.get(this.apiURL + "/routhHurwitz" , {params: params});
   }
 
 }
