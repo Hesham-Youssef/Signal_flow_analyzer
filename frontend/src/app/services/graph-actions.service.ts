@@ -90,7 +90,7 @@ export class GraphActionsService {
   }
 
 
-  mouseEventListeners(stage: Stage, layer: Layer, arrows: Shape[], gains: Konva.Text[], nodes: Shape[]) {
+  mouseEventListeners(stage: Stage, layer: Layer, arrows: Shape[], gains: Konva.Text[], nodes: Shape[], ids: Konva.Text[]) {
 
     stage.on('mousedown touchstart', (event) => {
       if (event.target.hasName('node')) {
@@ -105,8 +105,7 @@ export class GraphActionsService {
     })
 
     stage.on('click', async (event) => {
-
-
+      console.log(event.target)
       if(!this.deleteFlag && (event.target.hasName('branch') || event.target.hasName('text'))){
 
         document.getElementById('modal')!.style.display = 'block';
@@ -269,6 +268,12 @@ export class GraphActionsService {
         return;
       }
 
+      let id = ids[(event.target._id - 5) / 2];
+      let node = event.target
+      id.setAttr("x", node.getAttr('x') - 5);
+      id.setAttr("y", node.getAttr('y') + 24);
+      
+
       const pos: any = event.target.position();
       this.edges.filter((edge: number[]) => (edge[0] == this.currNode._id))
         .forEach((edge: number[]) => {
@@ -351,12 +356,12 @@ export class GraphActionsService {
     this.points = [];
   }
 
-  geteEgeList() {
+  getEdgeList() {
     let edgeList : number[][] = [];
     for(let i = 0; i < this.edges.length; i++) {
       edgeList.push([]);
-      edgeList[i].push(this.edges[i][0] - 5);
-      edgeList[i].push(this.edges[i][1] - 5);
+      edgeList[i].push((this.edges[i][0] - 5) /2);
+      edgeList[i].push((this.edges[i][1] - 5) /2);
       edgeList[i].push(this.edges[i][2]);
     }
     return edgeList;

@@ -7,7 +7,7 @@ import { Stage } from 'konva/lib/Stage';
 import { Circle } from 'konva/lib/shapes/Circle';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { clone } from 'mathjs';
-import {HttpService} from "../../services/http.service";4
+import {HttpService} from "../../services/http.service";
 
 
 @Component({
@@ -21,6 +21,7 @@ export class GraphComponent implements OnInit {
   nodes: any[] = [];
   arrows: any[] = [];
   gains: any[] = [];
+  ids: any[] = [];
   nodeColor: string = '#324b77';
   addBtn: boolean = false;
   deleteBtn: boolean = false;
@@ -68,13 +69,23 @@ export class GraphComponent implements OnInit {
     this.stage.add(this.layer);
     this.layer.add(this.selectionRec);
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.arrows, this.gains, this.nodes);
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.arrows, this.gains, this.nodes, this.ids);
   }
 
   addNode(){
     let node = clone(this.node);
+    let id = new Konva.Text({
+      x: node.getAttr('x') - 5,
+      y: node.getAttr('y') + 24,
+      text: ((node._id - 5) /2).toString(),
+      fontSize: 16,
+      fill: "Black",
+      strokeWidth: 2
+    });
     this.nodes.push(node);
     this.layer.add(node);
+    this.ids.push(id)
+    this.layer.add(id);
     this.layer.draw();
   }
 
@@ -106,7 +117,7 @@ export class GraphComponent implements OnInit {
   }
 
   solveSystem() {
-    this.httpService.getSystemSol(this.graphActionsService.geteEgeList(), this.nodes.length).subscribe((data: any) => {
+    this.httpService.getSystemSol(this.graphActionsService.getEdgeList(), this.nodes.length).subscribe((data: any) => {
       this.forwardPaths = data.Paths;
       this.pathGains = data.pathsGain;
       this.loops = data.Loops;
