@@ -393,6 +393,8 @@ export class GraphActionsService {
 
   drawBranch() {
     this.branchFlag = !this.branchFlag;
+    this.startSelectFlag = false;
+    this.endSelectFlag = false;
     this.deleteFlag = false;
     if(!this.branchFlag){
       this.currBranch = [];
