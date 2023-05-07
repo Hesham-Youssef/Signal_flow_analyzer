@@ -25,6 +25,8 @@ export class GraphComponent implements OnInit {
   nodeColor: string = '#324b77';
   addBtn: boolean = false;
   deleteBtn: boolean = false;
+  startBtn: boolean = false;
+  endBtn: boolean = false;
   node!: Circle;
   selectionRec!: Rect;
   gain: number = 0;
@@ -92,6 +94,8 @@ export class GraphComponent implements OnInit {
   addBranch(){
     this.addBtn = !this.addBtn;
     this.deleteBtn = false;
+    this.startBtn = false;
+    this.endBtn = false;
     this.updateBtns();
     this.graphActionsService.drawBranch();
   }
@@ -112,6 +116,8 @@ export class GraphComponent implements OnInit {
   delete(){
     this.deleteBtn = !this.deleteBtn;
     this.addBtn = false;
+    this.startBtn = false;
+    this.endBtn = false;
     this.updateBtns();
     this.graphActionsService.delete();
   }
@@ -148,14 +154,38 @@ export class GraphComponent implements OnInit {
     else {
       document.getElementById('delete-btn')!.style.background = '#ff2800';
     }
+
+    if (!this.startBtn) {
+      document.getElementById('start-btn')!.style.background = '#262628';
+    }
+    else {
+      document.getElementById('start-btn')!.style.background = '#000000';
+    }
+
+    if (!this.endBtn) {
+      document.getElementById('end-btn')!.style.background = '#262628';
+    }
+    else {
+      document.getElementById('end-btn')!.style.background = '#000000';
+    }
   }
 
 
   selectStart(){
+    this.startBtn = !this.startBtn;
+    this.addBtn = false;
+    this.deleteBtn = false;
+    this.endBtn = false;
+    this.updateBtns();
     this.graphActionsService.selectStart();
   }
 
   selectEnd(){
+    this.endBtn = !this.endBtn;
+    this.addBtn = false;
+    this.deleteBtn = false;
+    this.startBtn = false;
+    this.updateBtns();
     this.graphActionsService.selectEnd();
   }
 }
