@@ -1,5 +1,5 @@
 import { GraphActionsService } from './../../services/graph-actions.service';
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import Konva from 'konva'
 import { Layer } from 'konva/lib/Layer';
 import { shapes } from 'konva/lib/Shape';
@@ -8,7 +8,6 @@ import { Circle } from 'konva/lib/shapes/Circle';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { clone } from 'mathjs';
 import {HttpService} from "../../services/http.service";
-import * as http from "http";
 
 
 @Component({
@@ -22,14 +21,17 @@ export class GraphComponent implements OnInit {
   nodes: any[] = [];
   arrows: any[] = [];
   gains: any[] = [];
-  nodeColor: string = '#000000';
+  ids: any[] = [];
+  nodeColor: string = '#324b77';
+  addBtn: boolean = false;
+  deleteBtn: boolean = false;
   node!: Circle;
   selectionRec!: Rect;
   gain: number = 0;
-  forwardPaths: number[][] = [[1,2], [2,3], [3,4], [1,2], [2,3], [3,4]];
-  loops: number[][] = [[1,2], [2,3], [3,4]];
-  loopGains: number[] = [1, 2, 3];
-  pathGains: number[] = [3, 4, 5];
+  forwardPaths: number[][] = [];
+  loops: number[][] = [];
+  loopGains: number[] = [];
+  pathGains: number[] = [];
   deltas: number[] = [];
   systemDelta: number = 0;
   systemGain: number = 0;
@@ -67,25 +69,30 @@ export class GraphComponent implements OnInit {
     this.stage.add(this.layer);
     this.layer.add(this.selectionRec);
 
-    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.arrows, this.gains, this.nodes);
+    this.graphActionsService.mouseEventListeners(this.stage, this.layer, this.arrows, this.gains, this.nodes, this.ids);
   }
 
   addNode(){
     let node = clone(this.node);
+    let id = new Konva.Text({
+      x: node.getAttr('x') - 5,
+      y: node.getAttr('y') + 24,
+      text: ((node._id - 5) /2).toString(),
+      fontSize: 16,
+      fill: "Black",
+      strokeWidth: 2
+    });
     this.nodes.push(node);
     this.layer.add(node);
+    this.ids.push(id)
+    this.layer.add(id);
     this.layer.draw();
   }
 
-  addBranch($event : any){
-    if ($event.target.style.color == 'lightgreen') {
-      $event.target.style.background = '#262628';
-      $event.target.style.color = '#eee';
-    }
-    else {
-      $event.target.style.background = 'black';
-      $event.target.style.color = 'lightgreen';
-    }
+  addBranch(){
+    this.addBtn = !this.addBtn;
+    this.deleteBtn = false;
+    this.updateBtns();
     this.graphActionsService.drawBranch();
   }
 
@@ -103,11 +110,14 @@ export class GraphComponent implements OnInit {
   }
 
   delete(){
+    this.deleteBtn = !this.deleteBtn;
+    this.addBtn = false;
+    this.updateBtns();
     this.graphActionsService.delete();
   }
 
   solveSystem() {
-    this.httpService.getSystemSol(this.graphActionsService.geteEgeList(), this.nodes.length).subscribe((data: any) => {
+    this.httpService.getSystemSol(this.graphActionsService.getEdgeList(), this.nodes.length).subscribe((data: any) => {
       this.forwardPaths = data.Paths;
       this.pathGains = data.pathsGain;
       this.loops = data.Loops;
@@ -120,4 +130,23 @@ export class GraphComponent implements OnInit {
 
   }
 
+  closeSystemSol() {
+    document.getElementById("ans-card")!.style.display = "none";
+  }
+
+  private updateBtns() {
+    if (!this.addBtn) {
+      document.getElementById('add-btn')!.style.background = '#262628';
+    }
+    else {
+      document.getElementById('add-btn')!.style.background = '#3038d1';
+    }
+
+    if (!this.deleteBtn) {
+      document.getElementById('delete-btn')!.style.background = '#262628';
+    }
+    else {
+      document.getElementById('delete-btn')!.style.background = '#ff2800';
+    }
+  }
 }

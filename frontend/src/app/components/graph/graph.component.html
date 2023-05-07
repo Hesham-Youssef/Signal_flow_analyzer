@@ -1,9 +1,9 @@
 <div class="body">
   <div class="card">
     <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18" style="filter: invert(100%) sepia(0%) saturate(3123%) hue-rotate(122deg) brightness(119%) contrast(87%);"></button>
-    <button (click)="addNode()">add node</button>
-    <button (click)="addBranch($event)">add branch</button>
-    <button (click)="delete()" class="delete-btn">delete branch</button>
+    <button (click)="addNode()">Add node</button>
+    <button (click)="addBranch()" id="add-btn" class="add-btn">Add branch</button>
+    <button (click)="delete()" id="delete-btn" class="delete-btn">Delete</button>
     <button (click)="solveSystem()" class="solve-btn">Solve System</button>
   </div>
   <div id="container"></div>
@@ -20,6 +20,7 @@
   </div>
 
   <div class="ans-card" id="ans-card">
+    <span class="close" style="margin: 0 0 0 auto; height: 0;" (click)="closeSystemSol()">&times;</span>
     <h2>System Solution</h2>
     <br>
     <div class="card2">
@@ -35,7 +36,7 @@
       <span style="font-weight: 700">Loops</span>
       <br>
       <div *ngFor="let path of loops; index as i" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
-        Loop= <input class="output" value="{{path}}" readonly>
+        L{{i+1}}= <input class="output" value="{{path}}" readonly>
         Gain= <input class="output" value="{{loopGains[i]}}" readonly>
       </div>
     </div>
@@ -47,14 +48,14 @@
         System Δ= <input class="output" value="{{systemDelta}}" readonly>
       </div>
       <div *ngFor="let path of deltas; index as i" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
-        Δ{{i}}= <input class="output" value="{{path}}" readonly>
+        Δ{{i+1}}= <input class="output" value="{{path}}" readonly>
       </div>
     </div>
     <br>
     <div class="card2">
       <span style="font-weight: 700">System Gain</span>
       <br>
-      <input class="output" value="{{systemGain}}" readonly>
+      <input class="output" style="width: fit-content" value="{{systemGain}}" readonly>
     </div>
   </div>
 </div>

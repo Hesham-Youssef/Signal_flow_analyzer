@@ -1,7 +1,9 @@
 <div class="container">
   <div class="card">
     <div style="width: 100%">
-      <button [routerLink]="''" style="display: flex; justify-content: flex-start; align-items: center;"><img src="assets\back-svgrepo-com.svg" height="18" width="18" style="filter: invert(100%) sepia(0%) saturate(3123%) hue-rotate(122deg) brightness(119%) contrast(87%);"></button>
+      <div style="height: 0; margin-left: 0; margin-right: auto">
+        <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18" style="filter: invert(100%) sepia(0%) saturate(3123%) hue-rotate(122deg) brightness(119%) contrast(87%);"></button>
+      </div>
       <h1 style="display:flex; justify-content: center; align-items: center">Routh Stability Criterion</h1>
     </div>
     <form (ngSubmit)="submitCoef()" class="form">

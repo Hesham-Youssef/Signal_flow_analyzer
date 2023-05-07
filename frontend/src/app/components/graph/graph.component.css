@@ -67,6 +67,15 @@ button:active {
   background-color: #404042;
 }
 
+.add-btn:hover {
+  box-shadow: #3038d1 0 0 0 3px, transparent 0 0 0 0;
+  background-color: #303064;
+}
+
+.add-btn:active {
+  background-color: #404078;
+}
+
 .delete-btn:hover {
   box-shadow: #ff2800 0 0 0 3px, transparent 0 0 0 0;
   background-color: #644042;
@@ -89,7 +98,7 @@ button:active {
   display: none;
   position: fixed;
   z-index: 2;
-  padding-top: 100px;
+  padding-top: 10%;
   left: 0;
   top: 0;
   width: 100%;
@@ -101,7 +110,8 @@ button:active {
 
 .modal-content {
   font-family: sans-serif;
-  background-color: #fefefe;
+  background-color: #202022;
+  color: #eee;
   margin: auto;
   padding: 1%;
   width: 50%;
@@ -111,7 +121,7 @@ button:active {
 }
 
 .close {
-  color: #aaaaaa;
+  color: #eee;
   float: right;
   font-size: 28px;
   font-weight: bold;
@@ -119,7 +129,7 @@ button:active {
 
 .close:hover,
 .close:focus {
-  color: #000;
+  color: #aaa;
   text-decoration: none;
   cursor: pointer;
 }
@@ -143,7 +153,7 @@ button:active {
 .ans-card {
   font-family: sans-serif;
   font-size: 18px;
-  width: 35%;
+  width: 34%;
   height: fit-content;
   display: none;
   padding: 1%;
