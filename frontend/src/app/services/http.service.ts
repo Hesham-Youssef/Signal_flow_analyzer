@@ -11,12 +11,14 @@ export class HttpService {
 
   constructor(private http: HttpClient) { }
 
-  getSystemSol(edgeList: number[][], nodes: number) {
+  getSystemSol(edgeList: number[][], nodes: number, start: number|undefined, end: number|undefined) {
     let params = new HttpParams();
     for (let i = 0; i < edgeList.length; i++) {
       params = params.append('edges', edgeList[i].join(','));
     }
     params = params.append('nodes', nodes);
+    params = params.append('start', (start as number-5)/2);
+    params = params.append('end', (end as number-5)/2);
     return this.http.get(this.apiURL + "/flowGraph", {params: params});
   }
 

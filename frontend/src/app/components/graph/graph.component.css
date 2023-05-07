@@ -135,7 +135,8 @@ button:active {
 }
 
 .card,
-.ans-card {
+.ans-card,
+.menu-card {
   background-color: #202022;
   color: #eee;
   width: fit-content;
@@ -148,6 +149,10 @@ button:active {
   border-radius: 20px;
   border: none;
   box-shadow: 0 0 10px 0 black;
+}
+
+.menu-card{
+  width: 60%;
 }
 
 .ans-card {

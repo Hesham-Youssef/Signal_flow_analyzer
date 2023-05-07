@@ -16,10 +16,17 @@ import { AnimateTimings } from '@angular/animations';
 export class GraphActionsService {
   branchFlag: boolean = false;
   deleteFlag: boolean = false;
+
+  startSelectFlag: boolean = false;
+  endSelectFlag: boolean = false;
+
   currBranch: any[] = [];
   points: number[] = [];
   edges: number[][] = [];
-  
+
+  startNode: Circle | null = null;
+  endNode: Circle | null = null;
+
   isSubmitted: boolean = false;
   value = 0;
   holdingNode: boolean = false;
@@ -176,6 +183,34 @@ export class GraphActionsService {
         
         return;
       }
+
+      if(this.startSelectFlag){
+        if(event.target.hasName('node')){
+          (this.startNode as Circle)?.fill('#324b77')
+          this.startNode = event.target as Circle;
+          (this.startNode as Circle)?.fill('green')
+          if(event.target == this.endNode){
+            this.endNode = null
+          }
+        }
+        console.log(this.startNode, this.endNode);
+        
+        return;
+      }
+
+      if(this.endSelectFlag){
+        if(event.target.hasName('node')){
+          (this.endNode as Circle)?.fill('#324b77')
+          this.endNode = event.target as Circle;
+          (this.endNode as Circle)?.fill('red')
+          if(event.target == this.startNode){
+            this.startNode = null
+          }
+        }
+        console.log(this.startNode, this.endNode);
+        return;
+      }
+      
 
       if (!this.branchFlag) {
         return;
@@ -384,6 +419,27 @@ export class GraphActionsService {
   delete(){
     this.deleteFlag = !this.deleteFlag;
     this.branchFlag = false;
+    this.endSelectFlag = false;
+    this.startSelectFlag = false;
+    this.currBranch = [];
+    this.points = [];
+  }
+
+
+  selectEnd(){
+    this.deleteFlag = false;
+    this.branchFlag = false;
+    this.endSelectFlag = !this.endSelectFlag;
+    this.startSelectFlag = false;
+    this.currBranch = [];
+    this.points = [];
+  }
+
+  selectStart(){
+    this.deleteFlag = false;
+    this.branchFlag = false;
+    this.endSelectFlag = false;
+    this.startSelectFlag = !this.startSelectFlag;
     this.currBranch = [];
     this.points = [];
   }

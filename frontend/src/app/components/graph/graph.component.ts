@@ -117,7 +117,7 @@ export class GraphComponent implements OnInit {
   }
 
   solveSystem() {
-    this.httpService.getSystemSol(this.graphActionsService.getEdgeList(), this.nodes.length).subscribe((data: any) => {
+    this.httpService.getSystemSol(this.graphActionsService.getEdgeList(), this.nodes.length, this.graphActionsService.startNode?._id, this.graphActionsService.endNode?._id).subscribe((data: any) => {
       this.forwardPaths = data.Paths;
       this.pathGains = data.pathsGain;
       this.loops = data.Loops;
@@ -148,5 +148,14 @@ export class GraphComponent implements OnInit {
     else {
       document.getElementById('delete-btn')!.style.background = '#ff2800';
     }
+  }
+
+
+  selectStart(){
+    this.graphActionsService.selectStart();
+  }
+
+  selectEnd(){
+    this.graphActionsService.selectEnd();
   }
 }

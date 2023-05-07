@@ -10,17 +10,17 @@ import java.util.*;
 @RequestMapping("/solver")
 public class Controller {
     @GetMapping("/flowGraph")
-    public String handleExampleRequest(@RequestParam("edges") List<List<Double>> list, @RequestParam("nodes") int num) {
+    public String handleExampleRequest(@RequestParam("edges") List<List<Double>> list, @RequestParam("nodes") int nodes, @RequestParam("start") int start, @RequestParam("end") int end) {
         List<Map<Integer, Double>> graph = new ArrayList<>();
-        for (int i = 0; i < num; i++) {
+        for (int i = 0; i < nodes; i++) {
             graph.add(new HashMap<>());
         }
 
-        for (int i = 0; i < list.size(); i++) {
-            graph.get(list.get(i).get(0).intValue()).put(list.get(i).get(1).intValue(), Double.valueOf(list.get(i).get(2)));
+        for (List<Double> doubles : list) {
+            graph.get(doubles.get(0).intValue()).put(doubles.get(1).intValue(), doubles.get(2));
         }
 
-        Cycle_Detector detector = new Cycle_Detector(graph, 0, num-1);
+        Cycle_Detector detector = new Cycle_Detector(graph, start, end);
         JSONObject ans = detector.evaluateSystem();
 
         System.out.println(ans);

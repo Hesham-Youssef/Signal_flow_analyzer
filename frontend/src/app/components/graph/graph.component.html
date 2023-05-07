@@ -1,10 +1,12 @@
 <div class="body">
-  <div class="card">
+  <div class="menu-card">
     <button [routerLink]="''"><img src="assets\back-svgrepo-com.svg" height="18" width="18" style="filter: invert(100%) sepia(0%) saturate(3123%) hue-rotate(122deg) brightness(119%) contrast(87%);"></button>
     <button (click)="addNode()">Add node</button>
     <button (click)="addBranch()" id="add-btn" class="add-btn">Add branch</button>
     <button (click)="delete()" id="delete-btn" class="delete-btn">Delete</button>
     <button (click)="solveSystem()" class="solve-btn">Solve System</button>
+    <button (click)="selectStart()" class="select-start">Select Start</button>
+    <button (click)="selectEnd()" class="select-end">Select End</button>
   </div>
   <div id="container"></div>
 
